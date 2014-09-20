@@ -150,4 +150,11 @@ private:
 };
 
 
+#if defined _DEBUG
+#define CHECK_GL_ERROR		SimpleShaderContainer::shaderErrorCallback()
+#else
+#define CHECK_GL_ERROR
 #endif
+
+
+#endif		//SIMPLESHADERCONTAINER_H

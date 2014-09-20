@@ -33,6 +33,9 @@
     <Filter Include="RenderEngine\RenderTarget">
       <UniqueIdentifier>{ed3ad2d2-4c01-4704-948a-ac15844ed8b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shared\GL">
+      <UniqueIdentifier>{a8e4143c-a607-4ed8-b446-d645ffaf245b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneObject.cpp">
@@ -55,9 +58,6 @@
     </ClCompile>
     <ClCompile Include="shared_include\Matrix4x4.cpp">
       <Filter>shared</Filter>
-    </ClCompile>
-    <ClCompile Include="AppLayer\TaskMgrTBB.cpp">
-      <Filter>AppLayer</Filter>
     </ClCompile>
     <ClCompile Include="RenderEngine\GLRenderer.cpp">
       <Filter>RenderEngine</Filter>
@@ -86,6 +86,12 @@
     <ClCompile Include="RenderEngine\Material.cpp">
       <Filter>RenderEngine</Filter>
     </ClCompile>
+    <ClCompile Include="AssetLoader\kissModel.cpp">
+      <Filter>AssetLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="shared_include\GL\glew.c">
+      <Filter>shared\GL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneObject.h">
@@ -93,12 +99,6 @@
     </ClInclude>
     <ClInclude Include="AppLayer\GLApplication.h">
       <Filter>AppLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetLoader\nvImage.h">
-      <Filter>AssetLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetLoader\nvModel.h">
-      <Filter>AssetLoader</Filter>
     </ClInclude>
     <ClInclude Include="AssetLoader\rgbe.h">
       <Filter>AssetLoader</Filter>
@@ -117,9 +117,6 @@
     </ClInclude>
     <ClInclude Include="shared_include\Matrix4x4.h">
       <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="AppLayer\TaskMgrTBB.h">
-      <Filter>AppLayer</Filter>
     </ClInclude>
     <ClInclude Include="RenderEngine\GLRenderer.h">
       <Filter>RenderEngine</Filter>
@@ -159,6 +156,12 @@
     </ClInclude>
     <ClInclude Include="RenderEngine\Light.h">
       <Filter>RenderEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetLoader\kissModel.h">
+      <Filter>AssetLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_include\GL\glew.h">
+      <Filter>shared\GL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

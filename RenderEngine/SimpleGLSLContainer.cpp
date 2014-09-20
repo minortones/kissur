@@ -117,6 +117,10 @@ void SimpleShaderContainer::shaderErrorCallback(void)
 	case GL_OUT_OF_MEMORY:
 		printf("Memory issues, dawg\n");
 		break;
+
+	default:
+		throw ErrorNotify("Unknown shit be going down");
+		break;
 	}
 }
 
@@ -143,6 +147,7 @@ void SimpleShaderContainer::unbindFragProgram(void)		{}
 
 ShaderProgram SimpleShaderContainer::loadProgram(const char *filename, const char* entry, ShaderProfile target )
 {
+	kiss32 compiled(0), linked(1);
 	ShaderProgram shader = glCreateShader( target );
 
 	glShaderSource( shader, 1, &filename, NULL);
@@ -150,32 +155,53 @@ ShaderProgram SimpleShaderContainer::loadProgram(const char *filename, const cha
 	glCompileShader(shader);
 
 	// check if shader compiled
-	kiss32 compiled = 0;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
 	if (shader && compiled)
 	{
-		if(!mShaderProgram)
-		{
-			mShaderProgram = glCreateProgram();
-		}
-
-		glAttachShader(mShaderProgram, shader);
-
-		glBindAttribLocation(mShaderProgram, SA_POSITION,	SP_POS);
-		glBindAttribLocation(mShaderProgram, SA_NORMAL,		SP_NOR);
-
-		glLinkProgram(mShaderProgram);
-
 		if (target == GL_VERTEX_SHADER)
 			mVertProgram = shader;
 		else if (target == GL_FRAGMENT_SHADER)
 			mFragProgram = shader;
 	}
-	else
+	
+	if (mVertProgram && mFragProgram)
 	{
+		if (mShaderProgram)
+			destroyProgram(mShaderProgram);
+
+		mShaderProgram = glCreateProgram();
+
+		glAttachShader(mShaderProgram, mVertProgram);
+		glAttachShader(mShaderProgram, mFragProgram);
+		CHECK_GL_ERROR;
+		glLinkProgram(mShaderProgram);
+		CHECK_GL_ERROR;
+		glGetProgramiv(mShaderProgram, GL_LINK_STATUS, &linked);
+		CHECK_GL_ERROR;
+	}
+	
+	if ( !compiled || (mShaderProgram && !linked) )
+	{
+		kiss32 log_len(0);
+		char log[512];
+		if (compiled)
+			glGetProgramInfoLog(mShaderProgram, sizeof(log), &log_len, log);		// it's a linking error
+		else
+			glGetShaderInfoLog(shader, sizeof(log), &log_len, log);
+
+		log_len ? throw ErrorNotify( log ) : throw ErrorNotify("failed to compile or link a shader");
 		glDeleteShader( shader);
-		shader = NULL;
+		glDeleteProgram(mShaderProgram);
+		mShaderProgram = NULL;
+	}
+	else if (mShaderProgram)
+	{
+		CHECK_GL_ERROR;
+		glBindAttribLocation(mShaderProgram, SA_POSITION, SP_POS);
+		CHECK_GL_ERROR;
+		glBindAttribLocation(mShaderProgram, SA_NORMAL, SP_NOR);
+		CHECK_GL_ERROR;
 	}
 
 	return shader;
@@ -262,16 +288,18 @@ char* SimpleShaderContainer::getShaderFromFile(const char* filename, ShaderProfi
 
 void SimpleShaderContainer::bindProgram(ShaderProgram& prog)
 {
+	CHECK_GL_ERROR;
 	glUseProgram(prog);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(SA_POSITION);
+	glEnableVertexAttribArray(SA_NORMAL);
+	CHECK_GL_ERROR;
 }
 
 void SimpleShaderContainer::unbindProgram()
 {
 	glUseProgram(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(SA_POSITION);
+	glDisableVertexAttribArray(SA_NORMAL);
 
 	mIsBound = false;
 }
@@ -314,7 +342,7 @@ template<>
 void SimpleShaderContainer::setFloatParameter(const char* name, const float value)
 {
 	ShaderParameter param = getNamedParam(name);
-	if (param)
+	if (param >= 0)
 	{
 		setFloatParameter(param, value);
 	}
@@ -324,14 +352,14 @@ void SimpleShaderContainer::setFloatParameter(const char* name, const float valu
 template<>
 void SimpleShaderContainer::setVectorParameter(ShaderParameter param, const float* value)
 {
-	glUniform3fv(param, 3, value);
+	glUniform3fv(param, 1, value);
 }
 
 template<>
 void SimpleShaderContainer::setVectorParameter(const char* name, const float* value)
 {
 	ShaderParameter param = getNamedParam(name);
-	if (param)
+	if (param >= 0)
 	{
 		setVectorParameter(param, value);
 	}
@@ -347,40 +375,40 @@ template<>
 void SimpleShaderContainer::setVectorParameter(const char* name, const VECTOR3* value)
 {
 	ShaderParameter param = getNamedParam(name);
-	if (param)
+	if (param >= 0)
 	{
 		setVectorParameter(param, value);
-	}
-}
-
-
-template<>
-void SimpleShaderContainer::setMatrixParameter(ShaderParameter param, const Matrix4x4* value)
-{
-	glUniformMatrix4fv(param, 16, false, (float*)value->m);
-}
-
-template<>
-void SimpleShaderContainer::setMatrixParameter(const char* name, const Matrix4x4* value)
-{
-	ShaderParameter param = getNamedParam(name);
-	if(param)
-	{
-		setMatrixParameter(param, value);
 	}
 }
 
 template<>
 void SimpleShaderContainer::setMatrixParameter(ShaderParameter param, const float* value)
 {
-	glUniformMatrix4fv(param, 16, false, value);
+	glUniformMatrix4fv(param, 1, false, value);
+}
+
+
+template<>
+void SimpleShaderContainer::setMatrixParameter(ShaderParameter param, const Matrix4x4* value)
+{
+	setMatrixParameter(param, (float*)value->m);
+}
+
+template<>
+void SimpleShaderContainer::setMatrixParameter(const char* name, const Matrix4x4* value)
+{
+	ShaderParameter param = getNamedParam(name);
+	if(param >= 0)
+	{
+		setMatrixParameter(param, value);
+	}
 }
 
 template<>
 void SimpleShaderContainer::setMatrixParameter(const char* name, const float* value)
 {
 	ShaderParameter param = getNamedParam(name);
-	if (param)
+	if (param >= 0)
 	{
 		setMatrixParameter(param, value);
 	}

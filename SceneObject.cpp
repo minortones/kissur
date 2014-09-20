@@ -2,12 +2,13 @@
 #include "SceneObject.h"
 #include "shared_include/Macros.h"
 #include "AppLayer/GLApplication.h"
-#include "AssetLoader/nvModel.h"
+#include "AssetLoader/kissModel.h"
 #include "Physics Subsystem/PhysicsObject.h"
 #include "shared_include/RenderData.h"
 #include "RenderEngine/GLRenderer.h"
 #include "SceneManagement/Camera.h"
 
+using namespace kiss;
 
 SceneObject::SceneObject(void) : mUID(-1),
 								mModel(NULL),
@@ -46,14 +47,14 @@ void SceneObject::VRegister()
 
 void SceneObject::loadModel(const char* filepath)
 {
-	mModel = new nv::Model();
+	mModel = new Model();
 	if ( mModel->loadModelFromFile(filepath) )
 	{
 		mModel->computeNormals();
-		mModel->compileModel(nv::Model::eptAll);
-		mRenderData				= new RenderData(mModel->getCompiledVertices(), mModel->getCompiledIndices(nv::Model::eptTriangles), mWorld);
+		mModel->compileModel(eptAll);
+		mRenderData				= new RenderData(mModel->getCompiledVertices(), mModel->getCompiledIndices(eptTriangles), mWorld);
 		mRenderData->stride		= mModel->getCompiledVertexSize() * sizeof(float);
-		mRenderData->batchCount	= mModel->getCompiledIndexCount( nv::Model::eptTriangles);
+		mRenderData->batchCount	= mModel->getCompiledIndexCount( eptTriangles);
 		mRenderData->normOffset	= mModel->getCompiledNormalOffset();
 		mRenderData->vertexSize	= mModel->getPositionSize();
 		mRenderData->renderMode	= GL_TRIANGLES;
@@ -94,7 +95,7 @@ void SceneObject::update()
 	if ( mRenderData )
 	{
 		mRenderData->material	= mMaterial;
-		Service<GLRenderer>::Get()->addRenderData( mRenderData );
+		//Service<GLRenderer>::Get()->addRenderData( mRenderData );
 	}
 }
 

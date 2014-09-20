@@ -15,10 +15,12 @@ ErrorNotify::ErrorNotify(const char *error)
 
 
 ErrorNotify::~ErrorNotify()
-{}
+{
+	PrintError();
+}
 
 
 void ErrorNotify::PrintError()
 {
-	printf("%s\nQuitting! \n", mErrString);
+	printf("\n%s", mErrString);
 }

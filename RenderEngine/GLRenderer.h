@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GL_RENDENDER
+#define GL_RENDENDER
 
 /*
 	Nnanna Kama
@@ -14,8 +15,8 @@
 #ifdef TARGET_CG_SHADERS
 #include "glut.h"
 #else
-#include "GL/glew.h"
-#include "glut.h"
+#include <GL/glew.h>
+#include <GLUT/glut.h>
 #endif
 
 
@@ -70,3 +71,10 @@ private:
 
 
 static float myLightAngle = -0.4f;   /* Angle light rotates around scene. */
+
+
+template<typename T>	kissU32 getGLType(const T* pT);
+
+#define GET_GLTYPE(x)	getGLType(x)
+
+#endif

@@ -4,7 +4,7 @@
 #include "shared_include/Matrix4x4.h"
 
 // Forward Declarations
-namespace nv
+namespace kiss
 {
 	class Model;
 }
@@ -38,7 +38,7 @@ public:
 	//
 	PhysicsObject*	getRigidBody()		{return mRigidBody;}
 
-	nv::Model*		getModel()			{return mModel;}
+	kiss::Model*	getModel()			{return mModel;}
 
 	kiss32			getUID() const		{ return mUID; }
 
@@ -48,7 +48,7 @@ public:
 private:
 	PhysicsObject*		mRigidBody;
 
-	nv::Model*			mModel;
+	kiss::Model*		mModel;
 
 	Material*			mMaterial;
 

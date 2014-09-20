@@ -6,7 +6,6 @@
 */
 
 #include "Macros.h"
-#include "TaskMgrTBB.h"
 #include "GLApplication.h"
 #include "InputListener.h"
 #include "../SceneObject.h"
@@ -17,8 +16,6 @@
 
 
 bool GLApplication::isRunning				= false;
-
-TASKSETHANDLE g_pUpdatePhysicsTaskHandle	= TASKSETHANDLE_INVALID;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,7 +85,7 @@ bool GLApplication::init(int argc, char** argv)
 	glutKeyboardUpFunc(InputListener::KeyUpCallback);
 	glutTimerFunc( 33, GLApplication::update_callback, 1 );
 
-	glClearColor(0.1, 0.1, 0.1, 0);  // Gray background.
+	glClearColor(0.5f, 0.5f, 0.5f, 0.f);  // Gray background.
 	glEnable(GL_DEPTH_TEST);         // Hidden surface removal.
 
 
@@ -180,9 +177,6 @@ void GLApplication::update(int val)
 	glutPostRedisplay();
 	glutTimerFunc(33, GLApplication::update_callback, 1);
 
-
-	//tbb::tick_count t1 = tbb::tick_count::now();
-
 	//printf ("frame time = %3.5f sec\n", delta);
 }
 
@@ -230,9 +224,6 @@ void GLApplication::quit()
 	CameraManager::destroy();
 
 	delete mRenderer;
-
-	// shutdown all threads
-	gTaskMgr.Shutdown();
 
 	exit(0);
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,12 +21,15 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -40,6 +43,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <ExecutablePath>.dlls;$(ExecutablePath)</ExecutablePath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -50,19 +55,18 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\tbb30_018oss\include;.\shared_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\shared_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\GLUT;.\tbb30_018oss\lib\ia32\vc10;.\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glut32.lib;nvModel.lib;cg.lib;cgGL.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glut32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy .\GLUT\glut32.dll $(SolutionDir)$(Configuration)\
-copy .\tbb30_018oss\bin\ia32\vc10\tbb_debug.dll $(SolutionDir)$(Configuration)\
-copy .\tbb30_018oss\bin\ia32\vc10\tbbmalloc_debug.dll $(SolutionDir)$(Configuration)\</Command>
+      <Command>copy .\dlls\*.dll $(SolutionDir)$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,7 +89,7 @@ copy .\tbb30_018oss\bin\ia32\vc10\tbbmalloc_debug.dll $(SolutionDir)$(Configurat
   <ItemGroup>
     <ClCompile Include="AppLayer\GLApplication.cpp" />
     <ClCompile Include="AppLayer\InputListener.cpp" />
-    <ClCompile Include="AppLayer\TaskMgrTBB.cpp" />
+    <ClCompile Include="AssetLoader\kissModel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle Subsystem\ParticleSystem.cpp" />
     <ClCompile Include="Physics Subsystem\PhysicsManager.cpp" />
@@ -99,15 +103,16 @@ copy .\tbb30_018oss\bin\ia32\vc10\tbbmalloc_debug.dll $(SolutionDir)$(Configurat
     <ClCompile Include="SceneManagement\Camera.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="shared_include\ErrorNotify.cpp" />
+    <ClCompile Include="shared_include\GL\glew.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="shared_include\Matrix4x4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppLayer\GLApplication.h" />
     <ClInclude Include="AppLayer\InputListener.h" />
     <ClInclude Include="AppLayer\Service.h" />
-    <ClInclude Include="AppLayer\TaskMgrTBB.h" />
-    <ClInclude Include="AssetLoader\nvImage.h" />
-    <ClInclude Include="AssetLoader\nvModel.h" />
+    <ClInclude Include="AssetLoader\kissModel.h" />
     <ClInclude Include="AssetLoader\rgbe.h" />
     <ClInclude Include="Particle Subsystem\ParticleSystem.h" />
     <ClInclude Include="Physics Subsystem\PhysicsManager.h" />
@@ -121,6 +126,7 @@ copy .\tbb30_018oss\bin\ia32\vc10\tbbmalloc_debug.dll $(SolutionDir)$(Configurat
     <ClInclude Include="SceneManagement\Camera.h" />
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="shared_include\ErrorNotify.h" />
+    <ClInclude Include="shared_include\GL\glew.h" />
     <ClInclude Include="shared_include\Macros.h" />
     <ClInclude Include="shared_include\Matrix4x4.h" />
     <ClInclude Include="shared_include\Defines.h" />

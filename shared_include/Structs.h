@@ -3,7 +3,8 @@
 	Implemented for easier porting.
 */
 
-#pragma once
+#ifndef KISS_STRUCTS_H
+#define KISS_STRUCTS_H
 
 #include <assert.h>
 #include <math.h>
@@ -57,8 +58,10 @@ static inline float frand_range( float lo, float hi )
 
 
 
+#ifndef KISS_INFINITY
+#define KISS_INFINITY	3.402823466e+38F		/* max float val */
+#endif
 
-#define INFINITY	3.402823466e+38F		/* max float val */
 #ifndef PI
 #define PI	3.14159265358979323846
 #endif
@@ -220,10 +223,10 @@ typedef struct COLOR
 
 typedef struct AABB 
 {
-	// Initialize to an infinitely small bounding box.
+	// Initialize to an infinitely large bounding box.
 	AABB()
-		: minPt(INFINITY, INFINITY, INFINITY),
-		  maxPt(-INFINITY, -INFINITY, -INFINITY){}
+		: minPt(KISS_INFINITY, KISS_INFINITY, KISS_INFINITY),
+		  maxPt(-KISS_INFINITY, -KISS_INFINITY, -KISS_INFINITY){}
 
     VECTOR3 center()
 	{
@@ -246,7 +249,8 @@ typedef struct BoundingSphere
 
 }BoundingSphere;
 
-
 //=======================================================================================================================
+
+#endif
 
 #include "Structs.inl"

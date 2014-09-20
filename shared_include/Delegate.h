@@ -3,7 +3,6 @@
 //	C++ Delegate HEADER FILE
 //
 ///
-///	@file		BZ_Lua.h
 ///	@author		Nnanna Kama
 ///	@date		14/01/2013
 ///	@brief		Templated Functors / C++ Delegates.
@@ -15,10 +14,6 @@
 ///
 //////////////////////////////////////////////////////////////////////////
 
-
-
-
-#include "common/global/beelzebub.h"
 
 
 
@@ -37,7 +32,7 @@ public:
 	
 	ReturnType operator() (void)
 	{
-		BZ_ASSERT( (*mInstanceRef) && "This callback instance done delete, son!" );
+		assert( (*mInstanceRef) && "This callback instance done delete, son!" );
 
 		if ( (*mInstanceRef) )
 			return ( (*mInstanceRef)->*mCallback )();
@@ -64,7 +59,7 @@ public:
 
 	ReturnType operator() (const Arg1 arg1)
 	{
-		BZ_ASSERT( (*mInstanceRef) && "This callback instance done delete, son!" );
+		assert( (*mInstanceRef) && "This callback instance done delete, son!" );
 
 		if ( (*mInstanceRef) )
 			return ( (*mInstanceRef)->*mCallback )(arg1);
@@ -110,7 +105,7 @@ private:
 class TestClass1
 {
 public:
-	void PrintStuff (const bzText* stuffToPrint) { bz_Debug_PrintToDebugger(stuffToPrint); }
+	void PrintStuff (const char* stuffToPrint) { printf(stuffToPrint); }
 };
 
 
@@ -120,16 +115,16 @@ public:
 	TestClass2() : mID(sIDCounter++)
 	{}
 
-	TestClass2( bzS32 id ) : mID(id)
+	TestClass2( int id ) : mID(id)
 	{}
 
-	bzS32	getID()							{ return mID; }
-	void	setID(const bzS32 id )			{ mID = id; }
-	bzS32	incrementID(const bzS32 id)		{ sIDCounter = id; mID = sIDCounter++; return sIDCounter; }
+	int	getID()							{ return mID; }
+	void	setID(const int id )		{ mID = id; }
+	int	incrementID(const int id)		{ sIDCounter = id; mID = sIDCounter++; return sIDCounter; }
 
 private:
-	bzS32 mID;
-	static bzS32 sIDCounter;
+	int mID;
+	static int sIDCounter;
 };
 
 
@@ -138,17 +133,17 @@ void unleashTheKraken()
 	TestClass1 printer;
 	TestClass1* pointerToPrinter = &printer;
 
-	TDelegate1<TestClass1, void, const bzText*> printDelegate( &pointerToPrinter, &TestClass1::PrintStuff );
+	TDelegate1<TestClass1, void, const char*> printDelegate( &pointerToPrinter, &TestClass1::PrintStuff );
 
 	printDelegate( "stupid elephant" );
 	printDelegate( "stop that chicken" );
 
 	TestClass2* identifier = new TestClass2();
-	TDelegate0<TestClass2, bzS32>			idGetter( &identifier, &TestClass2::getID );
-	TDelegate1<TestClass2, void, bzS32>		idSetter( &identifier, &TestClass2::setID );
-	TDelegate1<TestClass2, bzS32, bzS32>	increase( &identifier, &TestClass2::incrementID );
+	TDelegate0<TestClass2, int>			idGetter( &identifier, &TestClass2::getID );
+	TDelegate1<TestClass2, void, int>	idSetter( &identifier, &TestClass2::setID );
+	TDelegate1<TestClass2, int, int>	increase( &identifier, &TestClass2::incrementID );
 
-	bzS32 id = idGetter();
+	int id = idGetter();
 	id = increase(3);
 	idSetter(2);
 

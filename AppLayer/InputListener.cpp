@@ -89,6 +89,7 @@ void InputListener::KeyUpCallback(unsigned char c, int x, int y)
 		GLApplication::destroy(0);
 		break;
 	}
+	printf("keyup %c\n", c);
 }
 
 

@@ -6,10 +6,8 @@
 
 
 #include "Macros.h"
-#include "../AssetLoader/nvModel.h"
-#include "glut.h"
-#include "Light.h"
 #include "GLRenderer.h"
+#include "Light.h"
 #include "RenderData.h"
 #include "RenderResourceFactory.h"
 #include "../Particle Subsystem/ParticleSystem.h"
@@ -19,8 +17,17 @@
 
 
 RenderData* gRdata				= NULL;
+RenderData* gRdata2				= NULL;
 const Light gDefaultLight		= { VECTOR3(5*sin(myLightAngle), 1.5f, 5*cos(myLightAngle) ), VECTOR3( 0.95f, 0.95f, 0.95f ) };
 const VECTOR3 gGlobalAmbient( 0.1f, 0.1f, 0.1f );
+
+
+///////////////////////////////////////////////////////////////////////////////////
+template<>				kissU32 getGLType(const float* pT)			{ return GL_FLOAT; }
+template<>				kissU32 getGLType(const kissU32* pT)		{ return GL_UNSIGNED_INT; }
+template<>				kissU32 getGLType(const kissUShort* pT)		{ return GL_UNSIGNED_SHORT; }
+template<>				kissU32 getGLType(const kissByte* pT)		{ return GL_UNSIGNED_BYTE; }
+///////////////////////////////////////////////////////////////////////////////////
 
 
 void initTestRenderData()
@@ -62,12 +69,35 @@ void initTestRenderData()
 										1, 5, 6, 2,			// right
 										4, 0, 3, 7 };		// left
 
+
 	gRdata					= new RenderData( mCubeVerts, mCubeIndices, Matrix4x4::IDENTITY );
 	gRdata->vertexSize		= 3;
 	gRdata->renderMode		= GL_QUADS;
 	gRdata->batchCount		= 24;
 	gRdata->normOffset		= 24;
-	gRdata->stride			= 3 * sizeof(float);
+	gRdata->stride			= 0;	//3 * sizeof(float);
+
+
+	static float verts[] = { 1.0f, 0.0f, -1.0f,    //0 index
+		1.0f, 0.0f, 1.0f, 	//1
+		-1.0f, 0.0f, 1.0f, 	//2
+		-1.0f, 0.0f, -1.0f, //3
+		1.0f, 1.0f, -1.0f, 	//4
+		1.0f, 1.0f, 1.0f, 	//5
+		-1.0f, 1.0f, 1.0f, 	//6
+		-1.0f, 1.0f, -1.0f, //7
+	};
+	static kissU32 indices[] = { 0, 1, 2, 0, 2, 3,
+		0, 4, 5, 0, 5, 1,
+	};
+
+	gRdata2 = new RenderData(verts, indices, Matrix4x4::IDENTITY);
+	gRdata2->vertexSize = 3;
+	gRdata2->renderMode = GL_TRIANGLES;
+	gRdata2->batchCount = 12;
+	gRdata2->normOffset = 0;
+	gRdata2->stride		= 0;
+	gRdata2->material	= NULL;
 }
 
 //================================================================================================================
@@ -134,9 +164,10 @@ void GLRenderer::init()
 
 void GLRenderer::update( int val )
 {
-	SimpleShaderContainer::shaderErrorCallback();
+	CHECK_GL_ERROR;
 
 	addRenderData( gRdata );		// temp test code
+	//addRenderData( gRdata2 );
 
 }
 
@@ -194,9 +225,9 @@ void GLRenderer::uploadShaderConstants( Material* pMat, const Camera* pCam, cons
 	}
 	
 	
-	shader->setVectorParameter( SP_EYE_POS, &invEye);
-	shader->setVectorParameter( SP_LIGHT_POS, &invLight);
-	shader->setMatrixParameter( SP_MODELVIEWPROJ, &mvp);		// Set parameter with row-major matrix.
+	shader->setVectorParameter( SP_EYE_POS,			&invEye);
+	shader->setVectorParameter( SP_LIGHT_POS,		&invLight);
+	shader->setMatrixParameter( SP_MODELVIEWPROJ,	&mvp);		// Set parameter with row-major matrix.
 
 	pMat->SetShaderParams();
 }
@@ -206,6 +237,8 @@ void GLRenderer::uploadShaderConstants( Material* pMat, const Camera* pCam, cons
 
 void GLRenderer::render()
 {
+	CHECK_GL_ERROR;
+
 	Material *mat;
 	const Camera* cam		= CameraManager::getMainCamera();
 
@@ -227,16 +260,16 @@ void GLRenderer::render()
 		kiss32 batch_count	= rd->batchCount;
 		const float* norms	= vb + rd->normOffset;
 
-		glVertexPointer( vert_size, GL_FLOAT, stride, vb);
-		glNormalPointer( GL_FLOAT, stride, norms);
+		glVertexPointer( vert_size, GET_GLTYPE(vb), stride, vb);
+		glNormalPointer( GET_GLTYPE(norms), stride, norms);
 
 #ifdef TARGET_GL_SHADERS
 		// these correspond to glBindAttribLocation()
-		glVertexAttribPointer( SA_POSITION,	vert_size, GL_FLOAT, 0, stride, vb);
-		glVertexAttribPointer( SA_NORMAL,	vert_size, GL_FLOAT, 0, stride, norms);
+		glVertexAttribPointer(SA_POSITION,	vert_size, GET_GLTYPE(vb),		GL_FALSE, stride, vb);
+		glVertexAttribPointer(SA_NORMAL,	vert_size, GET_GLTYPE(norms),	GL_FALSE, stride, norms);
 #endif
 
-		glDrawElements( rd->renderMode, batch_count, GL_UNSIGNED_INT, ib);
+		glDrawElements( rd->renderMode, batch_count, GET_GLTYPE(ib), ib);
 
 		mMRUShader = mat->ShaderContainer;
 	}
@@ -250,6 +283,7 @@ void GLRenderer::render()
 
 	flushRenderData();
 
+	CHECK_GL_ERROR;
 	
 	//glutReportErrors();
 }
@@ -260,7 +294,7 @@ void GLRenderer::render()
 
 void GLRenderer::reshape(int width, int height) const
 {
-	float aspect	= (float) width / (float) height;
+	float aspect	= float(width) / float(height);
 	for( kiss32 i = 0; i < CameraManager::getNumCameras(); ++i )
 	{
 		Camera* cam	= CameraManager::getCamera(i);

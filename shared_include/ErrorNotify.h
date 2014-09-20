@@ -25,7 +25,7 @@ public:
 
 private:
 
-	char	mErrString[64];
+	char	mErrString[512];
 
 
 };

@@ -32,6 +32,9 @@
 
 typedef	unsigned int		kissU32;
 typedef	int					kiss32;
+typedef unsigned short		kissUShort;
+typedef short				kissShort;
+typedef char				kissByte;
 
 // shader params
 #define SP_GLOBAL_AMBIENT	"globalAmbient"

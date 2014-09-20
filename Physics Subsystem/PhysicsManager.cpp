@@ -29,7 +29,7 @@ void PhysicsManager::_update(	void* pParams,
 {
 	int totalObjects = _physicsObjects->size();
 	
-	// TODO: could potentially use "tbb::parrallel_for"
+	// TODO: could potentially use "parrallel_for"
 	for (int i=0; i<totalObjects; i++)
 	{
 		for (int j=i+1; j<totalObjects; j++)
