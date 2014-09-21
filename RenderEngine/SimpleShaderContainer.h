@@ -31,7 +31,7 @@
 
 	typedef enum ShaderAttribute
 	{
-		SA_POSITION		= 0,
+		SA_POSITION		= 1,
 		SA_NORMAL
 	}ShaderAttribute;
 #endif

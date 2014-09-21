@@ -1,9 +1,8 @@
-#version 330
-#extension GL_ARB_draw_buffers : require
-#extension GL_EXT_gpu_shader4 : require
+#version 120
+//#extension GL_ARB_draw_buffers : require
+//#extension GL_EXT_gpu_shader4 : require
 
 
-varying vec4 color;
 varying vec3 l_pos;
 varying vec3 l_nor;
 
@@ -20,7 +19,7 @@ uniform vec3 Ke = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Ka = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Kd = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Ks = vec3( 1.0, 1.0, 1.0);
-uniform float  shininess = 0.0f;
+uniform float shininess = 0.0f;
 
 void main()
 {
@@ -50,9 +49,6 @@ void main()
 	vec3 specular = Ks * lightColor * specularLight;
 
 
-	color.xyz = emissive + ambient + diffuse + specular;
-	color.w = 1;
-
-	gl_FragColor = color;
+	gl_FragColor = vec4(emissive + ambient + diffuse + specular, 1);
 	//gl_FragData[0] = vec4( position.xyz, 0.0);
 }
