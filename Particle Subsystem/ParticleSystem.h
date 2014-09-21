@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "..\shared_include\Matrix4x4.h"
+#include "Matrix4x4.h"
 #include <vector>
 
 #ifdef _DIRECT3D

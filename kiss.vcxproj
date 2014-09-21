@@ -21,7 +21,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -56,13 +56,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\shared_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\GLUT;.\tbb30_018oss\lib\ia32\vc10;.\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>glut32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -90,6 +90,9 @@
     <ClCompile Include="AppLayer\GLApplication.cpp" />
     <ClCompile Include="AppLayer\InputListener.cpp" />
     <ClCompile Include="AssetLoader\kissModel.cpp" />
+    <ClCompile Include="include\ErrorNotify.cpp" />
+    <ClCompile Include="include\Matrix4x4.cpp" />
+    <ClCompile Include="include\RenderData.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle Subsystem\ParticleSystem.cpp" />
     <ClCompile Include="Physics Subsystem\PhysicsManager.cpp" />
@@ -102,11 +105,6 @@
     <ClCompile Include="RenderEngine\RenderTarget.cpp" />
     <ClCompile Include="SceneManagement\Camera.cpp" />
     <ClCompile Include="SceneObject.cpp" />
-    <ClCompile Include="shared_include\ErrorNotify.cpp" />
-    <ClCompile Include="shared_include\GL\glew.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="shared_include\Matrix4x4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppLayer\GLApplication.h" />
@@ -114,6 +112,16 @@
     <ClInclude Include="AppLayer\Service.h" />
     <ClInclude Include="AssetLoader\kissModel.h" />
     <ClInclude Include="AssetLoader\rgbe.h" />
+    <ClInclude Include="include\defines.h" />
+    <ClInclude Include="include\Delegate.h" />
+    <ClInclude Include="include\ErrorNotify.h" />
+    <ClInclude Include="include\Macros.h" />
+    <ClInclude Include="include\Matrix4x4.h" />
+    <ClInclude Include="include\MiscUtils.h" />
+    <ClInclude Include="include\nvImage.h" />
+    <ClInclude Include="include\RenderData.h" />
+    <ClInclude Include="include\SOIL.h" />
+    <ClInclude Include="include\Structs.h" />
     <ClInclude Include="Particle Subsystem\ParticleSystem.h" />
     <ClInclude Include="Physics Subsystem\PhysicsManager.h" />
     <ClInclude Include="Physics Subsystem\PhysicsObject.h" />
@@ -125,21 +133,14 @@
     <ClInclude Include="RenderEngine\RenderTarget.h" />
     <ClInclude Include="SceneManagement\Camera.h" />
     <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="shared_include\ErrorNotify.h" />
-    <ClInclude Include="shared_include\GL\glew.h" />
-    <ClInclude Include="shared_include\Macros.h" />
-    <ClInclude Include="shared_include\Matrix4x4.h" />
-    <ClInclude Include="shared_include\Defines.h" />
-    <ClInclude Include="shared_include\RenderData.h" />
-    <ClInclude Include="shared_include\Structs.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="include\Structs.inl" />
     <None Include="media\programs\basicLight.cgfx" />
     <None Include="media\programs\fireworks.cgfx" />
     <None Include="media\programs\fixed_function.cg" />
     <None Include="media\programs\fresnel.cgfx" />
     <None Include="media\programs\ogl_cg_lighting.cg" />
-    <None Include="shared_include\Structs.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

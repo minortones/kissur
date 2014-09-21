@@ -36,3 +36,17 @@ Icon
 .Trashes
 
 kiss.sdf
+*.tlog
+*.obj
+*.manifest
+*.res
+*.pdb
+*.idb
+*.ilk
+*.lastbuildstate
+*.log
+*.rc
+*.exe
+*.suo
+*.opensdf
+*.ipch

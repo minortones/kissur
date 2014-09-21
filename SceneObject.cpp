@@ -1,10 +1,10 @@
 
 #include "SceneObject.h"
-#include "shared_include/Macros.h"
+#include "Macros.h"
 #include "AppLayer/GLApplication.h"
 #include "AssetLoader/kissModel.h"
 #include "Physics Subsystem/PhysicsObject.h"
-#include "shared_include/RenderData.h"
+#include "RenderData.h"
 #include "RenderEngine/GLRenderer.h"
 #include "SceneManagement/Camera.h"
 

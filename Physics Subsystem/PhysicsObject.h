@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..\shared_include\Structs.h"
-#include "..\shared_include\Matrix4x4.h"
+#include "Structs.h"
+#include "Matrix4x4.h"
 
 typedef VECTOR3		Vector3;
 typedef Matrix4x4	Matrix;

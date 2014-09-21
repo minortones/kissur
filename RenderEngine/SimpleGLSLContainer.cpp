@@ -174,6 +174,10 @@ ShaderProgram SimpleShaderContainer::loadProgram(const char *filename, const cha
 
 		glAttachShader(mShaderProgram, mVertProgram);
 		glAttachShader(mShaderProgram, mFragProgram);
+		// attrib locations have to be bound before linking, else weird shiz happens.
+		// and it'll take you days before you even figure out why :(
+		glBindAttribLocation(mShaderProgram, SA_POSITION, SP_POS);
+		glBindAttribLocation(mShaderProgram, SA_NORMAL, SP_NOR);
 		CHECK_GL_ERROR;
 		glLinkProgram(mShaderProgram);
 		CHECK_GL_ERROR;
@@ -194,14 +198,6 @@ ShaderProgram SimpleShaderContainer::loadProgram(const char *filename, const cha
 		glDeleteShader( shader);
 		glDeleteProgram(mShaderProgram);
 		mShaderProgram = NULL;
-	}
-	else if (mShaderProgram)
-	{
-		CHECK_GL_ERROR;
-		glBindAttribLocation(mShaderProgram, SA_POSITION, SP_POS);
-		CHECK_GL_ERROR;
-		glBindAttribLocation(mShaderProgram, SA_NORMAL, SP_NOR);
-		CHECK_GL_ERROR;
 	}
 
 	return shader;

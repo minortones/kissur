@@ -1,7 +1,7 @@
 #ifndef SCENEOBJECT_H
 #define SCENEOBJECT_H
 
-#include "shared_include/Matrix4x4.h"
+#include "Matrix4x4.h"
 
 // Forward Declarations
 namespace kiss

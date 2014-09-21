@@ -5,8 +5,8 @@
 #include "ParticleSystem.h"
 #include "../RenderEngine/GLRenderer.h"
 #include "../AppLayer/GLApplication.h"
-#include "../shared_include\Macros.h"
-#include "../shared_include\RenderData.h"
+#include "Macros.h"
+#include "RenderData.h"
 
 
 

@@ -10,13 +10,13 @@
 #include <vector>
 #include "RenderResourceFactory.h"
 #include "Material.h"
-#include "../shared_include/Matrix4x4.h"
+#include "Matrix4x4.h"
 
 #ifdef TARGET_CG_SHADERS
 #include "glut.h"
 #else
 #include <GL/glew.h>
-#include <GLUT/glut.h>
+#include <GL/glut.h>
 #endif
 
 

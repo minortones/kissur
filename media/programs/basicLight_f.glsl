@@ -1,17 +1,21 @@
-#version 120
+#version 330
+#extension GL_ARB_draw_buffers : require
+#extension GL_EXT_gpu_shader4 : require
 
 
 varying vec4 color;
+varying vec3 l_pos;
+varying vec3 l_nor;
 
-varying vec4 hPos;
-varying vec4 hNorm;
+in vec3 in_pos;
+in vec3 in_nor;
 
 
-uniform vec3 globalAmbient;
-uniform vec3 eyePosition;
 uniform mat4 modelViewProj;
+uniform vec3 globalAmbient = vec3( 1.0, 1.0, 1.0);
 uniform vec3 lightColor = vec3( 1.0, 1.0, 1.0);
 uniform vec3 lightPosition = vec3( 1.0, 1.0, 1.0);
+uniform vec3 eyePosition = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Ke = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Ka = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Kd = vec3( 1.0, 1.0, 1.0);
@@ -21,8 +25,8 @@ uniform float  shininess = 0.0f;
 void main()
 {
 
-	vec3 P = hPos.xyz;
-	vec3 N = hNorm.xyz;
+	vec3 P = l_pos;
+	vec3 N = l_nor;
 
 	// Compute emissive term
 	vec3 emissive = Ke;
@@ -46,9 +50,9 @@ void main()
 	vec3 specular = Ks * lightColor * specularLight;
 
 
-	//color.xyz = vec3(1,1,1);//emissive + ambient + diffuse + specular;
-	//color.a = 1;
+	color.xyz = emissive + ambient + diffuse + specular;
+	color.w = 1;
 
-	gl_FragColor.xyz = emissive + ambient + diffuse + specular; //vec4(1,1,1,1);
+	gl_FragColor = color;
 	//gl_FragData[0] = vec4( position.xyz, 0.0);
 }

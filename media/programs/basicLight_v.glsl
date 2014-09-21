@@ -1,20 +1,31 @@
-#version 120
+#version 330
+#extension GL_EXT_gpu_shader4 : require
+
+//
+// Vertex shader for filling the MRT with normals, positions, and
+// materials. This handles normal materials, like the needles and branches.
+//
+// Author: Evan Hart
+// Email: sdkfeedback@nvidia.com
+//
+// Copyright (c) NVIDIA Corporation. All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+
+//all these are in eye-space
+varying vec4 color;
+varying vec3 l_pos;
+varying vec3 l_nor;
+
+in vec3 in_pos;
+in vec3 in_nor;
 
 
 
-varying vec3 in_pos;
-varying vec3 in_nor;
-
-varying vec4 hPos;
-varying vec4 hNorm;
-
-
-
-uniform vec3 globalAmbient;
-uniform vec3 eyePosition;
 uniform mat4 modelViewProj;
+uniform vec3 globalAmbient = vec3( 1.0, 1.0, 1.0);
 uniform vec3 lightColor = vec3( 1.0, 1.0, 1.0);
 uniform vec3 lightPosition = vec3( 1.0, 1.0, 1.0);
+uniform vec3 eyePosition = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Ke = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Ka = vec3( 1.0, 1.0, 1.0);
 uniform vec3 Kd = vec3( 1.0, 1.0, 1.0);
@@ -23,8 +34,10 @@ uniform float  shininess = 0.0f;
 
 
 void main()
-{	
-	hPos = vec4(in_pos.xyz, 1) * modelViewProj;
-	hNorm = vec4(in_nor.xyz, 1) * modelViewProj;
+{
+	
 	gl_Position = vec4(in_pos.xyz, 1) * modelViewProj;
+
+	l_pos = in_pos.xyz;
+	l_nor = in_nor;	
 }
