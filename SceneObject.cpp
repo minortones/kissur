@@ -8,6 +8,9 @@
 #include "RenderEngine/GLRenderer.h"
 #include "SceneManagement/Camera.h"
 
+#define CHECK_INIT_MODEL	if (!mModel) mModel = new Model()
+
+
 using namespace kiss;
 
 SceneObject::SceneObject(void) : mUID(-1),
@@ -27,9 +30,9 @@ SceneObject::SceneObject(void) : mUID(-1),
 
 SceneObject::~SceneObject(void)
 {
-	//SAFE_DELETE(mModel);
 	delete mRenderData;
 	delete mMaterial;
+	delete mModel;
 }
 
 
@@ -41,30 +44,61 @@ void SceneObject::VRegister()
 	mUID = Service<GLApplication>::Get()->registerObject( this );
 }
 
+//================================================================================================================
+
+
+void SceneObject::loadCube( float pSize )
+{
+	CHECK_INIT_MODEL;
+	mModel->makeCube(pSize);
+	fillRenderData();
+}
+
+//================================================================================================================
+
+
+void SceneObject::loadQuad(float pSize)
+{
+	CHECK_INIT_MODEL;
+	mModel->makeQuad(pSize);
+	fillRenderData();
+}
 
 //================================================================================================================
 
 
 void SceneObject::loadModel(const char* filepath)
 {
-	mModel = new Model();
+	CHECK_INIT_MODEL;
+
 	if ( mModel->loadModelFromFile(filepath) )
 	{
-		mModel->computeNormals();
-		mModel->compileModel(eptAll);
-		mRenderData				= new RenderData(mModel->getCompiledVertices(), mModel->getCompiledIndices(eptTriangles), mWorld);
-		mRenderData->stride		= mModel->getCompiledVertexSize() * sizeof(float);
-		mRenderData->batchCount	= mModel->getCompiledIndexCount( eptTriangles);
-		mRenderData->normOffset	= mModel->getCompiledNormalOffset();
-		mRenderData->vertexSize	= mModel->getPositionSize();
-		mRenderData->renderMode	= GL_TRIANGLES;
-
+		fillRenderData();
 	}
 	else
 	{
 		printf("Error loading model '%s'\n", filepath);
 		SAFE_DELETE(mModel);
 	}
+}
+
+//================================================================================================================
+
+void SceneObject::fillRenderData()
+{
+	if (mRenderData)
+		delete mRenderData;
+
+	mModel->computeNormals();
+	mModel->compileModel(eptAll);
+	auto verts = mModel->getCompiledVertices();
+	auto indies = mModel->getCompiledIndices(eptTriangles);
+	mRenderData = new RenderData(verts, indies, mWorld);
+	mRenderData->stride = mModel->getCompiledVertexSize() * sizeof(float);
+	mRenderData->batchCount = mModel->getCompiledIndexCount(eptTriangles);
+	mRenderData->normOffset = mModel->getCompiledNormalOffset();
+	mRenderData->vertexSize = mModel->getPositionSize();
+	mRenderData->renderMode = mModel->getPrimType() == eptNone ? GL_QUADS : GL_TRIANGLES;
 }
 
 
@@ -95,7 +129,7 @@ void SceneObject::update()
 	if ( mRenderData )
 	{
 		mRenderData->material	= mMaterial;
-		//Service<GLRenderer>::Get()->addRenderData( mRenderData );
+		Service<GLRenderer>::Get()->addRenderData( mRenderData );
 	}
 }
 

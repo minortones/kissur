@@ -23,7 +23,7 @@ Camera::~Camera(void)
 void Camera::update()
 {
 	kissU32 downKey = InputListener::getKeyDown();
-	float speed = 10.3f;
+	float speed = 1.3f;
 
 	if( downKey & KEYPRESS_UP )
 		mPosition.z -= speed;

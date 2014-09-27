@@ -1,22 +1,97 @@
 
 #include "kissModel.h"
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+
+
+static kissU32 mCubeIndices[] = {	0, 1, 2, 3,			// front
+									4, 5, 1, 0,			// top
+									3, 2, 6, 7,			// bottom
+									5, 4, 7, 6,			// back
+									1, 5, 6, 2,			// right
+									4, 0, 3, 7 };		// left
+
 
 namespace kiss
 {
-	Model::Model()
+	Model::Model() : mCustomVB(nullptr)
 	{}
 
 	Model::~Model()
-	{}
+	{
+		if (mCustomVB)
+			delete [] mCustomVB;
+	}
 
 	bool Model::loadModelFromFile(const char* file)
 	{
+		/*Assimp::Importer importer;
+		const aiScene* pScene = importer.ReadFile(file, 0);*/
 		return false;
 	}
 
-	int Model::getPositionSize() const
+	bool Model::makeCube(float dim)
 	{
-		return NULL;
+		if (mCustomVB)
+			delete [] mCustomVB;
+
+		mCustomVB = new float[60] {-dim,	dim,	dim,
+									dim,	dim,	dim,
+									dim,   -dim,	dim,
+								   -dim,   -dim,	dim,
+								   -dim,	dim,	-dim,
+									dim,	dim,	-dim,
+									dim,   -dim,	-dim,
+								   -dim,   -dim,	-dim,
+									// normals begin here
+									0.0, 0.0, 1.0,
+									0.0, 0.0, 1.0,
+
+									0.0, 1.0, 0.0,
+									0.0, 1.0, 0.0,
+
+									0.0, -1.0, 0.0,
+									0.0, -1.0, 0.0,
+
+									0.0, 0.0, -1.0,
+									0.0, 0.0, -1.0,
+
+									1.0, 0.0, 0.0,
+									1.0, 0.0, 0.0,
+
+									-1.0, 0.0, 0.0,
+									-1.0, 0.0, 0.0 };
+
+		mVertexSize		= 3;
+		mVertexCount	= 24;
+		mPrimType		= eptNone;
+
+		return true;
+	}
+
+	bool Model::makeQuad(float dim)
+	{
+		if (mCustomVB)
+			delete [] mCustomVB;
+
+		mCustomVB = new float[18] {-dim,	dim,	dim,
+									dim,	dim,	dim,
+									dim,   -dim,	dim,
+								   -dim,   -dim,	dim,
+									// normals begin here
+									0.0, 0.0, 1.0,
+									0.0, 0.0, 1.0 };
+
+		mVertexSize		= 3;
+		mVertexCount	= 4;
+		mPrimType		= eptNone;
+
+		return true;
+	}
+
+	kiss32 Model::getPositionSize() const
+	{
+		return mCustomVB ? mVertexSize : NULL;
 	}
 
 	void Model::computeNormals()
@@ -27,31 +102,36 @@ namespace kiss
 
 	const float* Model::getCompiledVertices() const
 	{
-		return NULL;
+		return mCustomVB ? mCustomVB : NULL;
 	}
 
 	const kissU32* Model::getCompiledIndices(PrimType prim) const
 	{
-		return NULL;
+		return mCustomVB ? mCubeIndices : NULL;
 	}
 
-	int Model::getCompiledVertexSize() const
+	kiss32 Model::getCompiledVertexSize() const
 	{
 		return NULL;
 	}
 
-	int Model::getCompiledVertexCount() const
+	kiss32 Model::getCompiledVertexCount() const
 	{
-		return NULL;
+		return mCustomVB ? mVertexCount : NULL;
 	}
 	
-	int Model::getCompiledIndexCount(PrimType prim) const
+	kiss32 Model::getCompiledIndexCount(PrimType prim) const
 	{
-		return NULL;
+		return mCustomVB ? mVertexCount : NULL;
 	}
 
-	int Model::getCompiledNormalOffset() const
+	kiss32 Model::getCompiledNormalOffset() const
 	{
-		return NULL;
+		return mCustomVB ? mVertexCount : NULL;
+	}
+
+	PrimType Model::getPrimType() const
+	{
+		return mPrimType;
 	}
 }

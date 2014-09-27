@@ -24,7 +24,11 @@ namespace kiss
 
 		bool loadModelFromFile(const char* file);
 
-		int getPositionSize() const;
+		bool makeCube(float pSize);
+
+		bool makeQuad(float pSize);
+
+		kiss32 getPositionSize() const;
 
 		void computeNormals();
 
@@ -34,16 +38,23 @@ namespace kiss
 
 		const kissU32* getCompiledIndices(PrimType prim = eptTriangles) const;
 		
-		int getCompiledVertexSize() const;
+		kiss32 getCompiledVertexSize() const;
 
-		int getCompiledVertexCount() const;
+		kiss32 getCompiledVertexCount() const;
 
-		int getCompiledIndexCount(PrimType prim = eptTriangles) const;
+		kiss32 getCompiledIndexCount(PrimType prim = eptTriangles) const;
 
-		int getCompiledNormalOffset() const;
+		kiss32 getCompiledNormalOffset() const;
+
+		PrimType getPrimType() const;
 	
 	private:
 
+		float*	mCustomVB;
+
+		kiss32		mVertexCount;
+		kiss32		mVertexSize;		// this is actually the size of the vertex position data
+		PrimType	mPrimType;
 	};
 }
 

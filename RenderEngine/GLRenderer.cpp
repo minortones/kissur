@@ -16,8 +16,6 @@
 #include "../AppLayer/GLApplication.h"
 
 
-RenderData* gRdata				= NULL;
-RenderData* gRdata2				= NULL;
 const Light gDefaultLight		= { VECTOR3(5*sin(myLightAngle), 1.5f, 5*cos(myLightAngle) ), VECTOR3( 0.95f, 0.95f, 0.95f ) };
 const VECTOR3 gGlobalAmbient( 0.1f, 0.1f, 0.1f );
 
@@ -28,77 +26,6 @@ template<>				kissU32 getGLType(const kissU32* pT)		{ return GL_UNSIGNED_INT; }
 template<>				kissU32 getGLType(const kissUShort* pT)		{ return GL_UNSIGNED_SHORT; }
 template<>				kissU32 getGLType(const kissByte* pT)		{ return GL_UNSIGNED_BYTE; }
 ///////////////////////////////////////////////////////////////////////////////////
-
-
-void initTestRenderData()
-{
-	float dim = 1.5f;
-
-	static float mCubeVerts[] = {  -dim,	dim,	dim,
-									dim,	dim,	dim,
-									dim,   -dim,	dim,
-								   -dim,   -dim,	dim,
-								   -dim,	dim,	-dim,
-									dim,	dim,	-dim,
-									dim,   -dim,	-dim,
-								   -dim,   -dim,	-dim,
-									// normals begin here
-									0.0, 0.0, 1.0,
-									0.0, 0.0, 1.0,
-
-									0.0, 1.0, 0.0,
-									0.0, 1.0, 0.0,
-
-									0.0, -1.0, 0.0,
-									0.0, -1.0, 0.0,
-
-									0.0, 0.0, -1.0,
-									0.0, 0.0, -1.0,
-
-									1.0, 0.0, 0.0,
-									1.0, 0.0, 0.0,
-
-									-1.0, 0.0, 0.0,
-									-1.0, 0.0, 0.0,
-														};
-
-	static kissU32 mCubeIndices[] = {	0, 1, 2, 3,			// front
-										4, 5, 1, 0,			// top
-										3, 2, 6, 7,			// bottom
-										5, 4, 7, 6,			// back
-										1, 5, 6, 2,			// right
-										4, 0, 3, 7 };		// left
-
-
-	gRdata					= new RenderData( mCubeVerts, mCubeIndices, Matrix4x4::IDENTITY );
-	gRdata->vertexSize		= 3;
-	gRdata->renderMode		= GL_QUADS;
-	gRdata->batchCount		= 24;
-	gRdata->normOffset		= 24;
-	gRdata->stride			= 0;	//3 * sizeof(float);
-
-
-	static float verts[] = { 1.0f, 0.0f, -1.0f,    //0 index
-		1.0f, 0.0f, 1.0f, 	//1
-		-1.0f, 0.0f, 1.0f, 	//2
-		-1.0f, 0.0f, -1.0f, //3
-		1.0f, 1.0f, -1.0f, 	//4
-		1.0f, 1.0f, 1.0f, 	//5
-		-1.0f, 1.0f, 1.0f, 	//6
-		-1.0f, 1.0f, -1.0f, //7
-	};
-	static kissU32 indices[] = { 0, 1, 2, 0, 2, 3,
-		0, 4, 5, 0, 5, 1,
-	};
-
-	gRdata2 = new RenderData(verts, indices, Matrix4x4::IDENTITY);
-	gRdata2->vertexSize = 3;
-	gRdata2->renderMode = GL_TRIANGLES;
-	gRdata2->batchCount = 12;
-	gRdata2->normOffset = 0;
-	gRdata2->stride		= 0;
-	gRdata2->material	= NULL;
-}
 
 //================================================================================================================
 
@@ -135,8 +62,6 @@ void GLRenderer::init()
 		mDefaultMaterial->ShaderContainer->unbindProgram();
 		
 		CameraManager::createCamera();
-
-		initTestRenderData();
 	}
 
 //#ifndef GET_PARAM
@@ -165,10 +90,6 @@ void GLRenderer::init()
 void GLRenderer::update( int val )
 {
 	CHECK_GL_ERROR;
-
-	addRenderData( gRdata );		// temp test code
-	//addRenderData( gRdata2 );
-
 }
 
 

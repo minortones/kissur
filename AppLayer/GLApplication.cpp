@@ -13,41 +13,30 @@
 #include "../RenderEngine/GLRenderer.h"
 #include "../Physics Subsystem/PhysicsManager.h"
 #include "../Particle Subsystem/ParticleSystem.h"
+#include <chrono>
 
 
-bool GLApplication::isRunning				= false;
-
+using namespace std::chrono;
 
 //////////////////////////////////////////////////////////////////////////
 
+bool GLApplication::isRunning				= false;
 
-GLuint m_glTimerQuery;
-double m_timer = 0;
+time_point<system_clock> gStartTime, gMRUTime;
 
-#ifdef TARGET_GL_SHADERS
 void initTimer()
 {
-	glGenQueries(1, &m_glTimerQuery);
-	glBeginQuery(GL_TIME_ELAPSED_EXT, m_glTimerQuery);
+	gStartTime = gMRUTime = system_clock::now();
 }
 
 double getElapsedTime()
 {
-	glEndQuery(GL_TIME_ELAPSED_EXT);
-	GLuint64 timeElapsed;
-	glGetQueryObjectui64vEXT(m_glTimerQuery, GL_QUERY_RESULT, &timeElapsed);
-	// accumulate time elapsed thus far
-	m_timer += double(timeElapsed) / 1e9;
-
-	// restart timer so we can ask again...
-	glBeginQuery(GL_TIME_ELAPSED_EXT, m_glTimerQuery);
-
-	return m_timer;
+	auto end				= system_clock::now();
+	duration<double> secs	= end - gMRUTime;
+	gMRUTime				= end;
+	
+	return secs.count();
 }
-#else
-void initTimer()			{}
-double getElapsedTime()		{ return 0; }
-#endif
 
 
 
@@ -99,7 +88,8 @@ bool GLApplication::init(int argc, char** argv)
 
 	SceneObject* sphere = new SceneObject();
 	sphere->initMaterial(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
-	sphere->loadModel("..\\media\\models\\venusm.obj");
+	sphere->loadCube(1.5f);
+	//sphere->loadModel("..\\media\\models\\venusm.obj");
 	//sphere->loadModel("..\\media\\models\\crysponza_bubbles\\sponza.obj");
 
 	initTimer();
@@ -134,29 +124,6 @@ std::vector<ParticleSystem*>& GLApplication::getObjectCollection()
 
 void GLApplication::update(int val)
 {
-	/*
-	do some general updating...
-	*/
-	const double elapsed	= getElapsedTime();
-	const double delta		= elapsed - mElapsedS;
-	mElapsedS				= elapsed;
-
-	//
-	// run physics on separate thread
-	//
-	/*gTaskMgr.CreateTaskSet(	PhysicsManager::update, 
-							NULL,
-							1,
-							NULL,
-							NULL,
-							"Physics task",
-							&g_pUpdatePhysicsTaskHandle);
-
-	gTaskMgr.WaitForSet(g_pUpdatePhysicsTaskHandle);
-	gTaskMgr.ReleaseHandle(g_pUpdatePhysicsTaskHandle);
-	g_pUpdatePhysicsTaskHandle = TASKSETHANDLE_INVALID;*/
-
-
 	for (size_t i = 0; i < mSceneObjects.size(); i++)
 	{
 		mSceneObjects[i]->update();
@@ -177,7 +144,7 @@ void GLApplication::update(int val)
 	glutPostRedisplay();
 	glutTimerFunc(33, GLApplication::update_callback, 1);
 
-	//printf ("frame time = %3.5f sec\n", delta);
+	//printf ("frame time = %3.5f sec\n", getElapsedTime());
 }
 
 

@@ -27,6 +27,8 @@ public:
 	virtual void update();
 
 	virtual void loadModel(const char* filepath);
+	virtual void loadCube( float pSize );
+	virtual void loadQuad(float pSize);
 
 	virtual void initMaterial( const char* filename, const char* vp_entry, const char* fp_entry );
 
@@ -46,6 +48,9 @@ public:
 
 
 private:
+
+	void				fillRenderData();
+
 	PhysicsObject*		mRigidBody;
 
 	kiss::Model*		mModel;

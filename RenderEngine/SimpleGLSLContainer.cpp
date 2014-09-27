@@ -119,7 +119,7 @@ void SimpleShaderContainer::shaderErrorCallback(void)
 		break;
 
 	default:
-		throw ErrorNotify("Unknown shit be going down");
+		throw ErrorNotify("Unknown shiz be going down, son!");
 		break;
 	}
 }
