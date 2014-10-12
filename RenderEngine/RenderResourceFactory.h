@@ -14,7 +14,7 @@
 
 
 
-typedef std::map<const char*, SimpleShaderContainer*>	ShaderLibraryMap;
+typedef std::map<kiss32, SimpleShaderContainer*>		ShaderLibraryMap;
 typedef std::map<kiss32, Material>						MaterialLibraryMap;
 
 class RenderResourceFactory

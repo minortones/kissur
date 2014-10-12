@@ -1,7 +1,7 @@
 /* Crc - 32 BIT ANSI X3.66 CRC checksum files */
 
 #include <stdio.h>
-#include "crc.h"
+#include "crc32.h"
 
 
 /**********************************************************************\
@@ -18,7 +18,7 @@
 
 /* Need an unsigned type capable of holding 32 bits; */
 
-typedef DWORD unsigned int;
+//typedef DWORD uint32_t;
 
 /* Copyright (C) 1986 Gary S. Brown.  You may use this program, or
    code or tables extracted from it, as desired without restriction.*/
@@ -66,7 +66,7 @@ typedef DWORD unsigned int;
 /*     hardware you could probably optimize the shift in assembler by  */
 /*     using byte-swap instructions.                                   */
 
-static UNS_32_BITS crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
+static uint32_t crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
 0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
 0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2,
@@ -116,52 +116,52 @@ static UNS_32_BITS crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
 //#define UPDC32(octet, crc) (crc_32_tab[((crc) ^ (octet)) & 0xff] ^ ((crc) >> 8))
 
 
-DWORD updateCRC32(unsigned char ch, DWORD crc)
+uint32_t updateCRC32(unsigned char ch, uint32_t crc)
 {
       return UPDC32(ch, crc);
 }
 
-bool crc32file(char *name, DWORD *crc, long *charcnt)
+//bool crc32file(char *name, uint32_t *crc, long *charcnt)
+//{
+//      FILE *fin;
+//      uint32_t oldcrc32;
+//      int c;
+//
+//      oldcrc32 = 0xFFFFFFFF; *charcnt = 0;
+//#ifdef MSDOS
+//      if ((fin=fopen(name, "rb"))==NULL)
+//#else
+//      if ((fin=fopen(name, "r"))==NULL)
+//#endif
+//      {
+//            //perror(name);
+//            return false;
+//      }
+//      while ((c=getc(fin))!=EOF)
+//      {
+//            ++*charcnt;
+//            oldcrc32 = UPDC32(c, oldcrc32);
+//      }
+//
+//      if (ferror(fin))
+//      {
+//            perror(name);
+//            *charcnt = -1;
+//      }
+//      fclose(fin);
+//
+//      *crc = oldcrc32 = ~oldcrc32;
+//
+//      return true;
+//}
+
+uint32_t crc32buf(const char *buf)
 {
-      FILE *fin;
-      DWORD oldcrc32;
-      int c;
+      uint32_t oldcrc32 = 0xFFFFFFFF;
 
-      oldcrc32 = 0xFFFFFFFF; *charcnt = 0;
-#ifdef MSDOS
-      if ((fin=fopen(name, "rb"))==NULL)
-#else
-      if ((fin=fopen(name, "r"))==NULL)
-#endif
+      for (const char* len = buf; len && *len != '\0'; ++len)
       {
-            //perror(name);
-            return false;
-      }
-      while ((c=getc(fin))!=EOF)
-      {
-            ++*charcnt;
-            oldcrc32 = UPDC32(c, oldcrc32);
-      }
-
-      if (ferror(fin))
-      {
-            perror(name);
-            *charcnt = -1;
-      }
-      fclose(fin);
-
-      *crc = oldcrc32 = ~oldcrc32;
-
-      return true;
-}
-
-DWORD crc32buf(char *buf, size_t len)
-{
-      DWORD oldcrc32 = 0xFFFFFFFF;
-
-      for ( ; len; --len, ++buf)
-      {
-            oldcrc32 = UPDC32(*buf, oldcrc32);
+		  oldcrc32 = UPDC32(*len, oldcrc32);
       }
 
       return ~oldcrc32;

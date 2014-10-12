@@ -89,6 +89,9 @@
     <ClCompile Include="include\RenderData.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="include\crc32.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneObject.h">
@@ -167,6 +170,9 @@
       <Filter>shared</Filter>
     </ClInclude>
     <ClInclude Include="include\Structs.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\crc32.h">
       <Filter>shared</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,6 +5,7 @@
 
 #include "Macros.h"
 #include "RenderResourceFactory.h"
+#include "crc32.h"
 
 
 ShaderLibraryMap	RenderResourceFactory::sShaderLibrary;
@@ -58,7 +59,8 @@ void RenderResourceFactory::onShaderDelete(SimpleShaderContainer* shader)
 
 SimpleShaderContainer* RenderResourceFactory::findOrCreateShader(const char* shader_name)
 {
-	ShaderLibraryMap::iterator itr = sShaderLibrary.find(shader_name);
+	auto key = CRC32(shader_name);
+	ShaderLibraryMap::iterator itr = sShaderLibrary.find(key);
 	if ( itr != sShaderLibrary.end() )
 	{
 		return itr->second;
@@ -73,7 +75,7 @@ SimpleShaderContainer* RenderResourceFactory::findOrCreateShader(const char* sha
 	// @todo
 
 
-	sShaderLibrary[ shader_name ] = shader;
+	sShaderLibrary[key] = shader;
 
 	return shader;
 

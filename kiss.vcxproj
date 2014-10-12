@@ -90,6 +90,7 @@
     <ClCompile Include="AppLayer\GLApplication.cpp" />
     <ClCompile Include="AppLayer\InputListener.cpp" />
     <ClCompile Include="AssetLoader\kissModel.cpp" />
+    <ClCompile Include="include\crc32.cpp" />
     <ClCompile Include="include\ErrorNotify.cpp" />
     <ClCompile Include="include\Matrix4x4.cpp" />
     <ClCompile Include="include\RenderData.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="AppLayer\Service.h" />
     <ClInclude Include="AssetLoader\kissModel.h" />
     <ClInclude Include="AssetLoader\rgbe.h" />
+    <ClInclude Include="include\crc32.h" />
     <ClInclude Include="include\defines.h" />
     <ClInclude Include="include\Delegate.h" />
     <ClInclude Include="include\ErrorNotify.h" />

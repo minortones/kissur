@@ -44,7 +44,7 @@
 
 
 
-typedef std::map<std::string, ShaderParameter >	ParamShaderMap;
+typedef std::map<kiss32, ShaderParameter >	ParamShaderMap;
 
 
 class SimpleShaderContainer

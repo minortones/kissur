@@ -13,6 +13,7 @@
 #include "Macros.h"
 #include "ErrorNotify.h"
 #include "GL/glew.h"
+#include "crc32.h"
 
 ShaderContext	SimpleShaderContainer::_gShaderContext	= NULL;
 
@@ -307,14 +308,15 @@ void SimpleShaderContainer::unbindProgram()
 
 ShaderParameter SimpleShaderContainer::getNamedParam( const char* name )
 {
-	ParamShaderMap::iterator itr = mShaderParamMap.find(name);
+	kiss32 key = CRC32(name);
+	ParamShaderMap::iterator itr = mShaderParamMap.find(key);
 
 	if( itr == mShaderParamMap.end() )
 	{
 		ShaderParameter param = glGetUniformLocation( mShaderProgram, name );
 
 		if(param >= 0)
-			mShaderParamMap[name] = param;
+			mShaderParamMap[key] = param;
 
 		return param;
 	}	
