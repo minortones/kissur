@@ -16,6 +16,7 @@ const Matrix4x4 Matrix4x4::IDENTITY = Matrix4x4( 1, 0, 0, 0,
 #include <malloc.h>
 //#include <pspvfpu.h>
 
+
 // http://forums.ps2dev.org/viewtopic.php?t=5557
 // http://bradburn.net/mr.mr/vfpu.html
 
@@ -136,11 +137,11 @@ Matrix4x4 & Matrix4x4::SetIdentity()
 
 Matrix4x4 & Matrix4x4::SetScaling( float scale )
 {
-	for ( u32 r = 0; r < 4; ++r )
+	for ( u32 r = 0; r < 3; ++r )
 	{
-		for ( u32 c = 0; c < 4; ++c )
+		for ( u32 c = 0; c < 3; ++c )
 		{
-			m[ r ][ c ] = ( r == c ) ? scale : 0; 
+			m[ r ][ c ] = ( r == c ) ? scale : 0;
 		}
 	}
 	return *this;

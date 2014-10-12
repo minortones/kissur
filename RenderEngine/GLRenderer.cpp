@@ -16,7 +16,8 @@
 #include "../AppLayer/GLApplication.h"
 
 
-const Light gDefaultLight		= { VECTOR3(5*sin(myLightAngle), 1.5f, 5*cos(myLightAngle) ), VECTOR3( 0.95f, 0.95f, 0.95f ) };
+const float gLightRadius		= 25.f;
+const Light gDefaultLight		= { VECTOR3(gLightRadius*sin(myLightAngle), 50.5f, gLightRadius*cos(myLightAngle) ), VECTOR3( 0.95f, 0.95f, 0.95f ) };
 const VECTOR3 gGlobalAmbient( 0.1f, 0.1f, 0.1f );
 
 
@@ -87,7 +88,7 @@ void GLRenderer::init()
 
 //================================================================================================================
 
-void GLRenderer::update( int val )
+void GLRenderer::update( float pElaspedS )
 {
 	CHECK_GL_ERROR;
 }
@@ -124,8 +125,8 @@ void GLRenderer::uploadShaderConstants( Material* pMat, const Camera* pCam, cons
 	Matrix4x4 inv( pTransform.Inverse() );
 	Matrix4x4 mvp( projection * view * pTransform );
 
-	VECTOR3 invEye( inv.Transform( camPos ) );
-	VECTOR3 invLight( inv.Transform( gDefaultLight.position ) );
+	VECTOR3 invEye( inv.TransformNormal( camPos ) );
+	VECTOR3 invLight( inv.TransformNormal( gDefaultLight.position ) );
 
 
 	if( mMRUShader != shader )
@@ -178,7 +179,7 @@ void GLRenderer::render()
 		const kissU32* ib	= rd->indexBuffer;
 		kiss32 vert_size	= rd->vertexSize;
 		kiss32 stride		= rd->stride;
-		kiss32 batch_count	= rd->batchCount;
+		kiss32 num_indices	= rd->numIndices;
 		const float* norms	= vb + rd->normOffset;
 
 		glVertexPointer( vert_size, GET_GLTYPE(vb), stride, vb);
@@ -190,7 +191,7 @@ void GLRenderer::render()
 		glVertexAttribPointer(SA_NORMAL,	vert_size, GET_GLTYPE(norms),	GL_FALSE, stride, norms);
 #endif
 
-		glDrawElements( rd->renderMode, batch_count, GET_GLTYPE(ib), ib);
+		glDrawElements(rd->renderMode, num_indices, GET_GLTYPE(ib), ib);
 
 		mMRUShader = mat->ShaderContainer;
 	}

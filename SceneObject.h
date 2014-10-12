@@ -38,13 +38,17 @@ public:
 	//
 	// inlines
 	//
-	PhysicsObject*	getRigidBody()		{return mRigidBody;}
+	PhysicsObject*	getRigidBody()				{return mRigidBody;}
 
-	kiss::Model*	getModel()			{return mModel;}
+	kiss::Model*	getModel()					{return mModel;}
 
-	kiss32			getUID() const		{ return mUID; }
+	kiss32			getUID() const				{ return mUID; }
 
-	const Matrix4x4& getMatrix() const	{ return mWorld; }
+	const Matrix4x4& getMatrix() const			{ return mWorld; }
+
+	Matrix4x4& getMatrix()						{ return mWorld; }
+
+	void setMatrix(const Matrix4x4& pVal)		{ mWorld = pVal; }
 
 
 private:

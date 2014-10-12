@@ -29,7 +29,7 @@ void initTimer()
 	gStartTime = gMRUTime = system_clock::now();
 }
 
-double getElapsedTime()
+double getElapsedTimeS()
 {
 	auto end				= system_clock::now();
 	duration<double> secs	= end - gMRUTime;
@@ -64,7 +64,7 @@ bool GLApplication::init(int argc, char** argv)
 		return true;
 
 	glutInit(&argc, argv);
-	glutInitWindowSize(400, 400);
+	glutInitWindowSize(600, 400);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 
 	glutCreateWindow(mAppName);
@@ -72,7 +72,7 @@ bool GLApplication::init(int argc, char** argv)
 	glutReshapeFunc(GLRenderer::reshape_callback);
 	glutKeyboardFunc(InputListener::KeyDownCallback);
 	glutKeyboardUpFunc(InputListener::KeyUpCallback);
-	glutTimerFunc( 33, GLApplication::update_callback, 1 );
+	glutTimerFunc( 1, GLApplication::update_callback, 1 );
 
 	glClearColor(0.5f, 0.5f, 0.5f, 0.f);  // Gray background.
 	glEnable(GL_DEPTH_TEST);         // Hidden surface removal.
@@ -86,11 +86,28 @@ bool GLApplication::init(int argc, char** argv)
 	//glutAddMenuEntry("[ ] Animate", ' ');
 	//glutAttachMenu(GLUT_RIGHT_BUTTON);
 
+	SceneObject* floor = new SceneObject();
+	{
+		floor->initMaterial(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
+		floor->loadQuad(1.f);
+		Matrix4x4 rot(Matrix4x4::IDENTITY), scale(Matrix4x4::IDENTITY), trans;
+		rot.SetRotateX(DEG_TO_RAD(90.f));
+		float scaling = 19.f;
+		scale.SetScaling(scaling);
+		scale.m24 = scaling - 1.f;		// offset the y-axis position appropriately
+
+		trans = scale * rot;
+		floor->setMatrix(trans);
+	}
+
 	SceneObject* sphere = new SceneObject();
-	sphere->initMaterial(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
-	sphere->loadCube(1.5f);
-	//sphere->loadModel("..\\media\\models\\venusm.obj");
-	//sphere->loadModel("..\\media\\models\\crysponza_bubbles\\sponza.obj");
+	{
+		sphere->initMaterial(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
+		sphere->loadCube(1.5f);
+	}
+
+	//sceneObj->loadModel("..\\media\\models\\venusm.obj");
+	//sceneObj->loadModel("..\\media\\models\\crysponza_bubbles\\sponza.obj");
 
 	initTimer();
 
@@ -100,7 +117,7 @@ bool GLApplication::init(int argc, char** argv)
 
 //================================================================================================================
 
-void GLApplication::destroy(int exit_value_or_whatever_this_crap_is)
+void GLApplication::destroy(kiss32 exit_value_or_whatever_this_crap_is)
 {
 	Service<GLApplication>::Destroy();
 }
@@ -122,8 +139,10 @@ std::vector<ParticleSystem*>& GLApplication::getObjectCollection()
 
 
 
-void GLApplication::update(int val)
+void GLApplication::update(kiss32 pCallbackID)
 {
+	mElapsedS = getElapsedTimeS();
+
 	for (size_t i = 0; i < mSceneObjects.size(); i++)
 	{
 		mSceneObjects[i]->update();
@@ -139,12 +158,11 @@ void GLApplication::update(int val)
 
 	CameraManager::update(false);
 
-	mRenderer->update(1);
+	mRenderer->update(mElapsedS);
 	
 	glutPostRedisplay();
-	glutTimerFunc(33, GLApplication::update_callback, 1);
 
-	//printf ("frame time = %3.5f sec\n", getElapsedTime());
+	//printf ("frame time = %3.5f sec\n", mElapsedS);
 }
 
 
@@ -198,9 +216,10 @@ void GLApplication::quit()
 
 //================================================================================================================
 
-void GLApplication::update_callback(int val)
+void GLApplication::update_callback(kiss32 pCallbackID)
 {
-	Service<GLApplication>::Get()->update(val);
+	Service<GLApplication>::Get()->update(pCallbackID);
+	glutTimerFunc(1, GLApplication::update_callback, pCallbackID);
 }
 
 

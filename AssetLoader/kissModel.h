@@ -53,6 +53,7 @@ namespace kiss
 		float*	mCustomVB;
 
 		kiss32		mVertexCount;
+		kiss32		mIndexCount;
 		kiss32		mVertexSize;		// this is actually the size of the vertex position data
 		PrimType	mPrimType;
 	};

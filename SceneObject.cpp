@@ -91,11 +91,11 @@ void SceneObject::fillRenderData()
 
 	mModel->computeNormals();
 	mModel->compileModel(eptAll);
-	auto verts = mModel->getCompiledVertices();
-	auto indies = mModel->getCompiledIndices(eptTriangles);
-	mRenderData = new RenderData(verts, indies, mWorld);
-	mRenderData->stride = mModel->getCompiledVertexSize() * sizeof(float);
-	mRenderData->batchCount = mModel->getCompiledIndexCount(eptTriangles);
+	auto verts				= mModel->getCompiledVertices();
+	auto indies				= mModel->getCompiledIndices(eptTriangles);
+	mRenderData				= new RenderData(verts, indies, mWorld);
+	mRenderData->stride		= mModel->getCompiledVertexSize() * sizeof(float);
+	mRenderData->numIndices = mModel->getCompiledIndexCount(eptTriangles);
 	mRenderData->normOffset = mModel->getCompiledNormalOffset();
 	mRenderData->vertexSize = mModel->getPositionSize();
 	mRenderData->renderMode = mModel->getPrimType() == eptNone ? GL_QUADS : GL_TRIANGLES;

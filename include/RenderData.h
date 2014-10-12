@@ -75,7 +75,7 @@ public:
 
 	kiss32			stride;
 
-	kiss32			batchCount;
+	kiss32			numIndices;
 
 	kiss32			normOffset;
 

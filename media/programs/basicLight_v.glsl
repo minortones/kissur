@@ -24,9 +24,9 @@ uniform float  shininess = 0.0f;
 
 
 void main()
-{	
+{
 	gl_Position = vec4(in_pos.xyz, 1) * modelViewProj;
 
 	l_pos = in_pos.xyz;
-	l_nor = in_nor;	
+	l_nor = in_nor;
 }

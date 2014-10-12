@@ -64,6 +64,7 @@ namespace kiss
 
 		mVertexSize		= 3;
 		mVertexCount	= 24;
+		mIndexCount		= 24;
 		mPrimType		= eptNone;
 
 		return true;
@@ -74,16 +75,19 @@ namespace kiss
 		if (mCustomVB)
 			delete [] mCustomVB;
 
-		mCustomVB = new float[18] {-dim,	dim,	dim,
+		mCustomVB = new float[24] {-dim,	dim,	dim,
 									dim,	dim,	dim,
 									dim,   -dim,	dim,
 								   -dim,   -dim,	dim,
 									// normals begin here
 									0.0, 0.0, 1.0,
-									0.0, 0.0, 1.0 };
+									0.0, 0.0, 1.0,
+									0.0, 0.0, 1.0,
+									0.0, 0.0, 1.0, };
 
 		mVertexSize		= 3;
-		mVertexCount	= 4;
+		mVertexCount	= 12;
+		mIndexCount		= 4;
 		mPrimType		= eptNone;
 
 		return true;
@@ -122,7 +126,7 @@ namespace kiss
 	
 	kiss32 Model::getCompiledIndexCount(PrimType prim) const
 	{
-		return mCustomVB ? mVertexCount : NULL;
+		return mCustomVB ? mIndexCount : NULL;
 	}
 
 	kiss32 Model::getCompiledNormalOffset() const

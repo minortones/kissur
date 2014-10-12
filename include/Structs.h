@@ -67,6 +67,8 @@ static inline float frand_range( float lo, float hi )
 #endif
 
 
+#define RAD_TO_DEG(rad)		((rad) * (180.f / PI)	)
+#define DEG_TO_RAD(deg)		((deg) * (PI / 180.f)	)
 
 
 

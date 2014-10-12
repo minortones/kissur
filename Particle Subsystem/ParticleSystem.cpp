@@ -191,7 +191,7 @@ void ParticleSystem::step(void)
 	mRenderData->vertexSize		= 3;
 	mRenderData->renderMode		= GL_POINTS;
 	mRenderData->stride			= sizeof(Particle);
-	mRenderData->batchCount		= mMaxNumParticles;
+	mRenderData->numIndices		= mMaxNumParticles;
 
 	//printf("------------PSYS STEP-------------------\n");
 	Service<GLRenderer>::Get()->addRenderData( mRenderData );

@@ -46,7 +46,7 @@ public:
 
 	virtual void	reshape(int width, int height) const;
 
-	virtual void	update(int );
+	virtual void	update(float pElapsedS);
 
 	virtual void	addRenderData( const RenderData* r );
 
