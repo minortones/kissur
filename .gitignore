@@ -50,3 +50,4 @@ kiss.sdf
 *.suo
 *.opensdf
 *.ipch
+*.unsuccessfulbuild
