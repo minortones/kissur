@@ -175,6 +175,21 @@
     <ClInclude Include="include\crc32.h">
       <Filter>shared</Filter>
     </ClInclude>
+    <ClInclude Include="include\EnumString.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Reflector.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Debug.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EnumReflector.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TypeUID.h">
+      <Filter>shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="media\programs\fireworks.cgfx">

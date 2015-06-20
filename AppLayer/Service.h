@@ -23,4 +23,4 @@ private:
 
 
 template<class T>
-T*	Service<T>::mService					= 0;
+T*	Service<T>::mService					= nullptr;

@@ -1,7 +1,15 @@
 
 #include "kissModel.h"
+#include "EnumReflector.h"
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
+
+using namespace kiss;
+
+BEGINENUMSTRING(PrimType, eptNone)
+EXPORTENUMSTRING(eptPoints)
+EXPORTENUMSTRING(eptEdges)
+FINISHENUMSTRING(eptTriangles)
 
 
 static kissU32 mCubeIndices[] = {	0, 1, 2, 3,			// front
@@ -19,6 +27,7 @@ namespace kiss
 
 	Model::~Model()
 	{
+		//auto primName = enumToString(mPrimType);	//Refl(mPrimType).ToString();
 		if (mCustomVB)
 			delete [] mCustomVB;
 	}
