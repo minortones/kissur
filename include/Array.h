@@ -5,7 +5,8 @@
 ///	@date		28/06/2015
 ///	@about		A fast lightweight alternative to std::vector
 /// @credit		based off http://bitsquid.blogspot.co.uk/2012/11/bitsquid-foundation-library.html array.h, with modifications
-///	@references	http://www.drdobbs.com/generictyped-buffers-i/184403791 | http://upcoder.com/3/roll-your-own-vector/ 
+///	@references	http://www.drdobbs.com/generictyped-buffers-i/184403791 | http://upcoder.com/3/roll-your-own-vector/
+///				http://www.drdobbs.com/generic-typed-buffers-ii/184403799
 ///
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
@@ -38,61 +39,81 @@ namespace ks {
 		using if_non_copyable_t = typename std::enable_if< !std::is_trivially_copyable<T>::value, T>::type;
 		
 		template<typename T>
-		void copy_into( if_copyable_t<T> *& pDest,
-			const T* pSource,
-			const size_t pSize )
+		void copy_into( if_copyable_t<T> *& pDest, const T* pSource, const size_t pSize )
 		{
 			memcpy(pDest, pSource, sizeof(T)*pSize);
 		}
 
 		template<typename T>
-		void copy_into( if_non_copyable_t<T> *& pDest,
-			const T* pSource,
-			const size_t pSize )
+		void copy_into( if_non_copyable_t<T> *& pDest, const T* pSource, const size_t pSize )
 		{
-			for ( size_t i = 0; i < pSize; ++i )
+			size_t i = 0;
+			switch ((pSize - i) & 7)	// Duff's device
 			{
-				pDest[ i ] = pSource[ i ];
+			case 0:
+				while (i != pSize)
+				{
+					pDest[ i ] = pSource[ i++ ];
+			case 7: pDest[ i ] = pSource[ i++ ];
+			case 6: pDest[ i ] = pSource[ i++ ];
+			case 5: pDest[ i ] = pSource[ i++ ];
+			case 4: pDest[ i ] = pSource[ i++ ];
+			case 3: pDest[ i ] = pSource[ i++ ];
+			case 2: pDest[ i ] = pSource[ i++ ];
+			case 1: pDest[ i ] = pSource[ i++ ];
+				}
 			}
 		}
 
 		template<typename T, class TAllocator>
-		void allocate( if_copyable_t<T> *& pDest,
-			const size_t pSize,
-			TAllocator& pAllocator)
+		void allocate( if_copyable_t<T> *& pDest, const size_t pSize, TAllocator& pAllocator)
 		{
 			pDest = (T *)pAllocator.allocate( sizeof(T) * pSize );
 		}
 
 		template<typename T, class TAllocator>
-		void allocate( if_non_copyable_t<T> *& pDest,
-			const size_t pSize,
-			TAllocator& pAllocator)
+		void allocate( if_non_copyable_t<T> *& pDest, const size_t pSize, TAllocator& pAllocator)
 		{
 			pDest = (T *)pAllocator.allocate( sizeof(T) * pSize );
 			for ( size_t i = 0; i < pSize; ++i )
 				pAllocator.construct( pDest + i, T() );
 		}
 		
-		
 
 		template<typename T, class TAllocator>
-		void deallocate(if_copyable_t<T> *& pBegin,
-			const size_t pCapacity,
-			TAllocator& pAllocator)
+		void deallocate(if_copyable_t<T> *& pBegin, const size_t pCapacity, TAllocator& pAllocator)
 		{
 			pAllocator.deallocate(pBegin, pCapacity);
 		}
 
 		template<typename T, class TAllocator>
-		void deallocate( if_non_copyable_t<T> *& pBegin,
-			const size_t pCapacity,
-			TAllocator& pAllocator)
+		void deallocate( if_non_copyable_t<T> *& pBegin, const size_t pCapacity, TAllocator& pAllocator)
 		{
 			for ( size_t i = 0; i < pCapacity; ++i )
 				pAllocator.destroy( pBegin + i );
 			
 			pAllocator.deallocate(pBegin, pCapacity);
+		}
+
+		template<typename T>
+		void duff_fill(T* pDest, const T& pFillValue, const size_t pSize)
+		{
+			size_t i = 0;
+			switch ((pSize - i) & 7)
+			{
+			case 0:
+				while (i != pSize)
+				{
+					pDest[ i++ ] = pFillValue;
+			case 7: pDest[ i++ ] = pFillValue;
+			case 6: pDest[ i++ ] = pFillValue;
+			case 5: pDest[ i++ ] = pFillValue;
+			case 4: pDest[ i++ ] = pFillValue;
+			case 3: pDest[ i++ ] = pFillValue;
+			case 2: pDest[ i++ ] = pFillValue;
+			case 1: pDest[ i++ ] = pFillValue;
+				}
+			}
 		}
 	}
 
@@ -123,7 +144,7 @@ public:
 
 		T& front() 				{ CHECK_OUT_OF_BOUNDS(0); return _begin[0];			}
 		const T& front() const	{ CHECK_OUT_OF_BOUNDS(0); return _begin[0];			}
-		T& back() 				{ CHECK_OUT_OF_BOUNDS(_size-1); return _begin[_size-1];	}
+		T& back() 				{ CHECK_OUT_OF_BOUNDS(_size - 1); return _begin[_size-1];	}
 		const T& back() const	{ CHECK_OUT_OF_BOUNDS(_size - 1); return _begin[_size - 1]; }
 
 		void pop_back()			{ CHECK_OUT_OF_BOUNDS(_size - 1); --_size; }
@@ -142,10 +163,8 @@ public:
 		{
 			const size_t prev_size = _size;
 			resize( new_size );
-			for ( size_t i = prev_size; i < _size; ++i )
-			{
-				_begin[i] = pFillValue;
-			}
+
+			details::duff_fill(_begin + prev_size, pFillValue, _size);
 		}
 
 		void reserve(size_t new_capacity)
@@ -183,8 +202,7 @@ public:
 
 		void push_back(const T &item)
 		{
-			T copy(item);
-			push_back(std::move(copy));
+			push_back( std::move(T(item)) );
 		}
 
 		void push_back(T&& item)
@@ -259,24 +277,16 @@ public:
 			return *this;
 		}
 
-		T & operator[](size_t i)
-		{
-			CHECK_OUT_OF_BOUNDS( i );
-			return _begin[i];
-		}
+		T & operator[](size_t i)				{ CHECK_OUT_OF_BOUNDS( i ); return _begin[i]; }
 
-		const T & operator[](size_t i) const
-		{
-			CHECK_OUT_OF_BOUNDS( i );
-			return _begin[i];
-		}
+		const T & operator[](size_t i) const	{ CHECK_OUT_OF_BOUNDS( i ); return _begin[i]; }
 
 
 	private:
 		T*			_begin;
 		size_t		_size;
 		size_t		_capacity;
-		TAllocator	_allocator;		// don't use directly, rather redirect via details:: namespace
+		TAllocator	_allocator;		// don't use directly, rather redirect via details::
 	};
 
 
