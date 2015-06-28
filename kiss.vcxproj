@@ -113,6 +113,7 @@
     <ClInclude Include="AppLayer\Service.h" />
     <ClInclude Include="AssetLoader\kissModel.h" />
     <ClInclude Include="AssetLoader\rgbe.h" />
+    <ClInclude Include="include\Array.h" />
     <ClInclude Include="include\crc32.h" />
     <ClInclude Include="include\Debug.h" />
     <ClInclude Include="include\defines.h" />

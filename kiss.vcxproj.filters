@@ -190,6 +190,9 @@
     <ClInclude Include="include\TypeUID.h">
       <Filter>shared</Filter>
     </ClInclude>
+    <ClInclude Include="include\Array.h">
+      <Filter>shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="media\programs\fireworks.cgfx">
