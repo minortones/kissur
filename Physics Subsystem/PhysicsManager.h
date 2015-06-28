@@ -1,13 +1,12 @@
 #pragma once
 
-#include <vector>
+#include <Array.h>
 
 class PhysicsObject;
 struct BoundingSphere;
 
 typedef PhysicsObject					PhysicsObjectType;
-typedef std::vector<PhysicsObjectType*> PhysicsObjectArray;
-typedef std::size_t						size_type;
+typedef ks::Array<PhysicsObjectType*>	PhysicsObjectArray;
 
 
 

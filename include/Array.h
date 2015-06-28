@@ -19,21 +19,23 @@
 /// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////
 
+#include <type_traits>
+#include <xmemory>
 
 #ifndef KS_ARRAY
 #define KS_ARRAY
 
 
-namespace KS {
+namespace ks {
 
 	namespace details
 	{
-		// use SFINAE to speed-up trivially copyable types
+		// use SFINAE to optimise trivially copyable types
 		template <typename T = void>
 		using if_copyable_t = typename std::enable_if< std::is_trivially_copyable<T>::value, T>::type;
 
 		template <typename T = void>
-		using if_not_copyable_t = typename std::enable_if< !std::is_trivially_copyable<T>::value, T>::type;
+		using if_non_copyable_t = typename std::enable_if< !std::is_trivially_copyable<T>::value, T>::type;
 		
 		template<typename T>
 		void copy_into( if_copyable_t<T> *& pDest,
@@ -44,7 +46,7 @@ namespace KS {
 		}
 
 		template<typename T>
-		void copy_into( if_not_copyable_t<T> *& pDest,
+		void copy_into( if_non_copyable_t<T> *& pDest,
 			const T* pSource,
 			const size_t pSize )
 		{
@@ -63,7 +65,7 @@ namespace KS {
 		}
 
 		template<typename T, class TAllocator>
-		void allocate( if_not_copyable_t<T> *& pDest,
+		void allocate( if_non_copyable_t<T> *& pDest,
 			const size_t pSize,
 			TAllocator& pAllocator)
 		{
@@ -83,7 +85,7 @@ namespace KS {
 		}
 
 		template<typename T, class TAllocator>
-		void deallocate( if_not_copyable_t<T> *& pBegin,
+		void deallocate( if_non_copyable_t<T> *& pBegin,
 			const size_t pCapacity,
 			TAllocator& pAllocator)
 		{
@@ -107,6 +109,9 @@ namespace KS {
 #endif
 
 public:
+	typedef typename T*			iterator;
+	typedef typename const T*	const_iterator;
+
 		size_t size() const		{ return _size;			}
 		bool any() const 		{ return _size != 0;	}
 		bool empty() const		{ return _size == 0;	}
@@ -119,7 +124,9 @@ public:
 		T& front() 				{ CHECK_OUT_OF_BOUNDS(0); return _begin[0];			}
 		const T& front() const	{ CHECK_OUT_OF_BOUNDS(0); return _begin[0];			}
 		T& back() 				{ CHECK_OUT_OF_BOUNDS(_size-1); return _begin[_size-1];	}
-		const T& back() const	{ CHECK_OUT_OF_BOUNDS(_size-1); return _begin[_size-1];	}
+		const T& back() const	{ CHECK_OUT_OF_BOUNDS(_size - 1); return _begin[_size - 1]; }
+
+		void pop_back()			{ CHECK_OUT_OF_BOUNDS(_size - 1); --_size; }
 
 		void clear()			{ resize(0);}
 		void trim()				{ set_capacity(_size); }
@@ -174,14 +181,11 @@ public:
 			set_capacity(new_capacity);
 		}
 
-#if !KS_ARRAY_MOVE_SEMANTICS_ONLY
 		void push_back(const T &item)
 		{
-			if (_size + 1 > _capacity)
-				grow();
-			_begin[_size++] = item;
+			T copy(item);
+			push_back(std::move(copy));
 		}
-#endif
 
 		void push_back(T&& item)
 		{
@@ -189,8 +193,6 @@ public:
 				grow();
 			_begin[_size++] = std::move(item);
 		}
-
-		void pop_back()					{ --_size; }
 
 
 		Array() : _begin(nullptr), _size(0), _capacity(0), _allocator( TAllocator() )
@@ -222,6 +224,9 @@ public:
 			details::copy_into(_begin, other.begin_, sizeof(T)*n );
 			return *this;
 		}
+#else
+		Array(const Array &other) = delete;
+		Array &operator=(const Array &other) = delete;
 #endif
 
 		Array(Array &&other)
@@ -271,11 +276,11 @@ public:
 		T*			_begin;
 		size_t		_size;
 		size_t		_capacity;
-		TAllocator	_allocator;	// never use directly, but redirect via details:: namespace
+		TAllocator	_allocator;		// don't use directly, rather redirect via details:: namespace
 	};
 
 
-}	//namespace KS
+}	//namespace ks
 
 
 #endif	// KS_ARRAY

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <vector>
+#include <Array.h>
 #include "Service.h"
 #include "Structs.h"
 
@@ -41,8 +41,8 @@ public:
 	kiss32 registerObject(T* o)
 	{
 		kissU32 i(0);
-		kiss32 id					= o->getUID();
-		std::vector<T*>& objects	= getObjectCollection<T>();
+		kiss32 id			= o->getUID();
+		auto& objects		= getObjectCollection<T>();
 
 		for ( i = 0; i < objects.size() && o != objects[i]; ++i )
 		{}
@@ -80,7 +80,7 @@ public:
 protected:
 
 	template<class T>
-	std::vector<T*>&	getObjectCollection();
+	ks::Array<T*>&		getObjectCollection();
 
 	GLRenderer*			mRenderer;
 
@@ -97,14 +97,12 @@ protected:
 		Dynamic arrays to the App's subsystems. Just ParticleSystem for now
 	*/
 
-	std::vector<ParticleSystem*>	mParticleSubsytems;
+	ks::Array<ParticleSystem*>	mParticleSubsytems;
 
-	std::vector<SceneObject*>		mSceneObjects;
+	ks::Array<SceneObject*>		mSceneObjects;
 
 };
 
-
-extern unsigned int	g_pUpdatePhysicsTaskHandle; //task handle for updating physics
 
 
 

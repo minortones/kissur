@@ -7,7 +7,7 @@
 //	Would need extending via Interfaces to support various kinds of cam.
 /************************************************************************/
 
-#include <vector>
+#include "Array.h"
 #include "Structs.h"
 #include "Matrix4x4.h"
 
@@ -93,7 +93,7 @@ private:
 
 	static Camera*				mMainCamera;
 
-	static std::vector<Camera*>	mCameras;
+	static ks::Array<Camera*>	mCameras;
 };
 
 #endif

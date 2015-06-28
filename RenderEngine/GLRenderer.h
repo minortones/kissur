@@ -7,7 +7,7 @@
 	Renderer requires cgToolkit 3.0 to run. TODO: add as error msg.
 */
 
-#include <vector>
+#include <Array.h>
 #include "RenderResourceFactory.h"
 #include "Material.h"
 #include "Matrix4x4.h"
@@ -26,7 +26,7 @@ class RenderData;
 class ParticleSystem;
 class SimpleShaderContainer;
 
-typedef std::vector<const RenderData*>	RenderDataArray;
+typedef ks::Array<const RenderData*>	RenderDataArray;
 
 class GLRenderer
 {

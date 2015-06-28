@@ -3,7 +3,7 @@
 #define	RENDERTARGET_H
 
 #include "defines.h"
-#include <vector>
+#include <Array.h>
 
 typedef	kissU32		kissRenderTexture;
 
@@ -35,7 +35,7 @@ private:
 
 	kissRenderTexture				mDepthBuffer;
 
-	std::vector<kissRenderTexture>	mRenderSurfaceCollection;
+	ks::Array<kissRenderTexture>	mRenderSurfaceCollection;
 };
 
 

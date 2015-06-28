@@ -62,7 +62,7 @@ void RenderTarget::addRenderSurface(RenderTargetDesc desc)
 	{
 		kissU32 i = mRenderSurfaceCollection.size();
 		glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT+i, GL_TEXTURE_2D, texture, 0);
-		mRenderSurfaceCollection.push_back(texture);
+		mRenderSurfaceCollection.push_back( std::move(texture) );
 	}
 
 	// unbind texture

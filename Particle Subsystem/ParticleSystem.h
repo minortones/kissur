@@ -8,7 +8,7 @@
 #pragma once
 
 #include "Matrix4x4.h"
-#include <vector>
+#include <Array.h>
 
 #ifdef _DIRECT3D
 
@@ -124,9 +124,9 @@ protected:
 	const int				mMaxNumParticles;
 	float					mTimePerParticle;
 
-	std::vector<Particle>	mParticles;
-	std::vector<Particle*>	mAliveParticles;
-	std::vector<Particle*>	mDeadParticles;
+	ks::Array<Particle>		mParticles;
+	ks::Array<Particle*>	mAliveParticles;
+	ks::Array<Particle*>	mDeadParticles;
 
 
 	SimpleShaderContainer*		mShader;

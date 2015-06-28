@@ -126,13 +126,13 @@ void GLApplication::destroy(kiss32 exit_value_or_whatever_this_crap_is)
 //================================================================================================================
 
 template<>
-std::vector<SceneObject*>& GLApplication::getObjectCollection()
+ks::Array<SceneObject*>& GLApplication::getObjectCollection()
 {
 	return mSceneObjects;
 }
 
 template<>
-std::vector<ParticleSystem*>& GLApplication::getObjectCollection()
+ks::Array<ParticleSystem*>& GLApplication::getObjectCollection()
 {
 	return mParticleSubsytems;
 }

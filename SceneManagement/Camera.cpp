@@ -54,16 +54,14 @@ void Camera::update()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Camera*					CameraManager::mMainCamera	= NULL;
-std::vector<Camera*>	CameraManager::mCameras		= std::vector<Camera*>();
+ks::Array<Camera*>		CameraManager::mCameras		= ks::Array<Camera*>();
 
 
 
 Camera* CameraManager::createCamera()
 {
-	mMainCamera = new Camera();
-	mCameras.push_back(mMainCamera);
-	return mMainCamera;
-
+	mCameras.push_back(new Camera());
+	return mMainCamera = mCameras.back();
 }
 
 
@@ -95,5 +93,5 @@ void CameraManager::destroy()
 	{
 		SAFE_DELETE(mCameras[i]);
 	}
-	mCameras.empty();
+	mCameras.clear();
 }
