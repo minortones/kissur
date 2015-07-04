@@ -120,6 +120,7 @@ bool GLApplication::init(int argc, char** argv)
 void GLApplication::destroy(kiss32 exit_value_or_whatever_this_crap_is)
 {
 	Service<GLApplication>::Destroy();
+	exit(0);
 }
 
 
@@ -209,8 +210,6 @@ void GLApplication::quit()
 	CameraManager::destroy();
 
 	delete mRenderer;
-
-	exit(0);
 }
 
 
@@ -218,8 +217,11 @@ void GLApplication::quit()
 
 void GLApplication::update_callback(kiss32 pCallbackID)
 {
-	Service<GLApplication>::Get()->update(pCallbackID);
-	glutTimerFunc(1, GLApplication::update_callback, pCallbackID);
+	if (isRunning)
+	{
+		Service<GLApplication>::Get()->update(pCallbackID);
+		glutTimerFunc(1, GLApplication::update_callback, pCallbackID);
+	}
 }
 
 

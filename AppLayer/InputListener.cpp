@@ -52,7 +52,6 @@ void InputListener::KeyDownCallback(unsigned char c, int x, int y)
 		break;
 
 	case 27:  // Esc key
-		GLApplication::destroy(0);
 		break;
 
 	default:
