@@ -64,6 +64,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>glut32.lib;glew32s.lib;assimpd.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>copy .\dlls\*.dll $(SolutionDir)$(Configuration)\</Command>
@@ -87,6 +88,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>.\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>glut32.lib;glew32s.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

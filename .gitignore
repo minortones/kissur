@@ -51,3 +51,4 @@ kiss.sdf
 *.opensdf
 *.ipch
 *.unsuccessfulbuild
+*.vsp
