@@ -3,7 +3,7 @@
 
 /*
 	Nnanna Kama
-	Singleton Render class
+	Render class
 	Renderer requires cgToolkit 3.0 to run. TODO: add as error msg.
 */
 
@@ -36,11 +36,9 @@ public:
 
 	virtual ~GLRenderer(void);
 
-	static  void				render_callback(void);
+	static  void	render_callback(void);
 
-	static	void				reshape_callback(int width, int height);
-
-	virtual	void	init();
+	static	void	reshape_callback(int width, int height);
 
 	virtual void	render();
 
@@ -73,7 +71,7 @@ private:
 static float myLightAngle = -0.4f;   /* Angle light rotates around scene. */
 
 
-template<typename T>	kissU32 getGLType(const T* pT);
+template<typename T>	ksU32 getGLType(const T* pT);
 
 #define GET_GLTYPE(x)	getGLType(x)
 

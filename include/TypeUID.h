@@ -4,7 +4,7 @@
 
 #define NAME_MAX	64
 
-typedef kissU32			kissType;
+typedef ksU32			kissType;
 
 template<typename T>
 struct TypeUID

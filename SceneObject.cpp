@@ -11,7 +11,7 @@
 #define CHECK_INIT_MODEL	if (!mModel) mModel = new Model()
 
 
-using namespace kiss;
+using namespace ks;
 
 SceneObject::SceneObject(void) : mUID(-1),
 								mModel(NULL),
@@ -109,7 +109,7 @@ void SceneObject::initMaterial( const char* filename, const char* vp_entry, cons
 {
 	mMaterial = new Material( RenderResourceFactory::findOrCreateShader( filename ) );
 
-	setBrassMaterial( mMaterial );
+	Material::setBrassMaterial( mMaterial );
 
 	mMaterial->ShaderContainer->loadProgram(filename, vp_entry, fp_entry);
 }
@@ -124,7 +124,7 @@ void SceneObject::setRenderStates()
 
 //================================================================================================================
 
-void SceneObject::update()
+void SceneObject::update(float elapsed)
 {
 	if ( mRenderData )
 	{

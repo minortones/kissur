@@ -48,7 +48,7 @@ inline const char* EnumLoop<EID+1>::get(decltype(EID) pID)	\
 template<typename ENUMTYPE> template<kiss32 ENUMID>
 const char* EnumString<ENUMTYPE>::get()
 {
-	KISS_ASSERT(0 && "This enum hasn't been exported/declared");
+	KS_ASSERT(0 && "This enum hasn't been exported/declared");
 	return "undeclared";
 }
 

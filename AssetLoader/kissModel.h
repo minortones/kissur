@@ -4,7 +4,7 @@
 
 #include <Defines.h>
 
-namespace kiss
+namespace ks
 {
 	enum PrimType {
 		eptNone = 0x0,
@@ -36,7 +36,7 @@ namespace kiss
 
 		const float* getCompiledVertices() const;
 
-		const kissU32* getCompiledIndices(PrimType prim = eptTriangles) const;
+		const ksU32* getCompiledIndices(PrimType prim = eptTriangles) const;
 		
 		kiss32 getCompiledVertexSize() const;
 

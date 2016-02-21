@@ -22,16 +22,26 @@ const VECTOR3 gGlobalAmbient( 0.1f, 0.1f, 0.1f );
 
 
 ///////////////////////////////////////////////////////////////////////////////////
-template<>				kissU32 getGLType(const float* pT)			{ return GL_FLOAT; }
-template<>				kissU32 getGLType(const kissU32* pT)		{ return GL_UNSIGNED_INT; }
-template<>				kissU32 getGLType(const kissUShort* pT)		{ return GL_UNSIGNED_SHORT; }
-template<>				kissU32 getGLType(const kissByte* pT)		{ return GL_UNSIGNED_BYTE; }
+template<>				ksU32 getGLType(const float* pT)		{ return GL_FLOAT; }
+template<>				ksU32 getGLType(const ksU32* pT)		{ return GL_UNSIGNED_INT; }
+template<>				ksU32 getGLType(const ksUShort* pT)		{ return GL_UNSIGNED_SHORT; }
+template<>				ksU32 getGLType(const ksByte* pT)		{ return GL_UNSIGNED_BYTE; }
 ///////////////////////////////////////////////////////////////////////////////////
 
 //================================================================================================================
 
 GLRenderer::GLRenderer(void) : mDefaultMaterial(NULL), mMRUShader(NULL)
-{	
+{
+	mDefaultMaterial = new Material(RenderResourceFactory::findOrCreateShader(gDefaultShaderFilename));
+	Material::setRedPlasticMaterial(mDefaultMaterial);
+
+	mDefaultMaterial->ShaderContainer->loadProgram(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
+	mDefaultMaterial->ShaderContainer->bindProgram();
+	mDefaultMaterial->ShaderContainer->setVectorParameter(SP_GLOBAL_AMBIENT, &gGlobalAmbient);
+	mDefaultMaterial->ShaderContainer->setVectorParameter(SP_LIGHT_COL, &gDefaultLight.color);
+	mDefaultMaterial->ShaderContainer->unbindProgram();
+
+	CameraManager::createCamera();
 }
 
 
@@ -43,45 +53,6 @@ GLRenderer::~GLRenderer(void)
 	SAFE_DELETE(mDefaultMaterial);
 	mRenderData.clear();
 	RenderResourceFactory::shutDown();
-}
-
-
-//================================================================================================================
-
-
-void GLRenderer::init()
-{
-	if(!mDefaultMaterial)
-	{
-		mDefaultMaterial					= new Material( RenderResourceFactory::findOrCreateShader(gDefaultShaderFilename) );
-		setRedPlasticMaterial(mDefaultMaterial);
-
-		mDefaultMaterial->ShaderContainer->loadProgram(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
-		mDefaultMaterial->ShaderContainer->bindProgram();
-		mDefaultMaterial->ShaderContainer->setVectorParameter( SP_GLOBAL_AMBIENT, &gGlobalAmbient);
-		mDefaultMaterial->ShaderContainer->setVectorParameter( SP_LIGHT_COL, &gDefaultLight.color );
-		mDefaultMaterial->ShaderContainer->unbindProgram();
-		
-		CameraManager::createCamera();
-	}
-
-//#ifndef GET_PARAM
-//#define GET_PARAM(name) \
-//	myCgVertexParam_##name = \
-//	mShaderContainer->getNamedParam(#name); \
-//	checkForCgError("could not get " #name " parameter");
-//
-//	GET_PARAM(modelViewProj);
-//	GET_PARAM(globalAmbient);
-//	GET_PARAM(lightColor);
-//	GET_PARAM(lightPosition);
-//	GET_PARAM(eyePosition);
-//	GET_PARAM(Ke);
-//	GET_PARAM(Ka);
-//	GET_PARAM(Kd);
-//	GET_PARAM(Ks);
-//	GET_PARAM(shininess);
-	//#endif
 }
 
 
@@ -152,6 +123,25 @@ void GLRenderer::uploadShaderConstants( Material* pMat, const Camera* pCam, cons
 	shader->setMatrixParameter( SP_MODELVIEWPROJ,	&mvp);		// Set parameter with row-major matrix.
 
 	pMat->SetShaderParams();
+
+
+	//#ifndef GET_PARAM
+	//#define GET_PARAM(name) \
+	//	myCgVertexParam_##name = \
+	//	mShaderContainer->getNamedParam(#name); \
+	//	checkForCgError("could not get " #name " parameter");
+	//
+	//	GET_PARAM(modelViewProj);
+	//	GET_PARAM(globalAmbient);
+	//	GET_PARAM(lightColor);
+	//	GET_PARAM(lightPosition);
+	//	GET_PARAM(eyePosition);
+	//	GET_PARAM(Ke);
+	//	GET_PARAM(Ka);
+	//	GET_PARAM(Kd);
+	//	GET_PARAM(Ks);
+	//	GET_PARAM(shininess);
+	//#endif
 }
 
 
@@ -161,7 +151,6 @@ void GLRenderer::render()
 {
 	CHECK_GL_ERROR;
 
-	Material *mat;
 	const Camera* cam		= CameraManager::getMainCamera();
 
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -171,27 +160,31 @@ void GLRenderer::render()
 	for( RenderDataArray::iterator itr = mRenderData.begin(); itr != mRenderData.end(); itr++ )
 	{
 		const RenderData* rd( *itr );
-		mat					= rd->material ? rd->material : mDefaultMaterial;
+		Material *mat		= rd->material ? rd->material : mDefaultMaterial;
 
 		uploadShaderConstants( mat, cam, rd->Transform );
 
 		const float* vb		= (const float*)rd->vertexBuffer;
-		const kissU32* ib	= rd->indexBuffer;
+		const ksU32* ib		= rd->indexBuffer;
 		kiss32 vert_size	= rd->vertexSize;
 		kiss32 stride		= rd->stride;
 		kiss32 num_indices	= rd->numIndices;
 		const float* norms	= vb + rd->normOffset;
 
 		glVertexPointer( vert_size, GET_GLTYPE(vb), stride, vb);
-		glNormalPointer( GET_GLTYPE(norms), stride, norms);
+		if (rd->normOffset)
+			glNormalPointer( GET_GLTYPE(norms), stride, norms);
 
 #ifdef TARGET_GL_SHADERS
 		// these correspond to glBindAttribLocation()
 		glVertexAttribPointer(SA_POSITION,	vert_size, GET_GLTYPE(vb),		GL_FALSE, stride, vb);
-		glVertexAttribPointer(SA_NORMAL,	vert_size, GET_GLTYPE(norms),	GL_FALSE, stride, norms);
+		if ( rd->normOffset )
+			glVertexAttribPointer(SA_NORMAL,vert_size, GET_GLTYPE(norms),	GL_FALSE, stride, norms);
 #endif
-
-		glDrawElements(rd->renderMode, num_indices, GET_GLTYPE(ib), ib);
+		if (ib)
+			glDrawElements(rd->renderMode, num_indices, GET_GLTYPE(ib), ib);
+		else
+			glDrawArrays(rd->renderMode, 0, num_indices);
 
 		mMRUShader = mat->ShaderContainer;
 	}

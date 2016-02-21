@@ -8,8 +8,8 @@
 #ifndef MATRIX4X4_H__
 #define MATRIX4X4_H__
 
-
-#include "Structs.h"
+struct VECTOR3;
+class v4;
 
 
 typedef unsigned int u32;

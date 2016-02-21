@@ -33,6 +33,9 @@
     <Filter Include="RenderEngine\RenderTarget">
       <UniqueIdentifier>{ed3ad2d2-4c01-4704-948a-ac15844ed8b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FX">
+      <UniqueIdentifier>{17f55a7e-98b9-4132-a067-44ced4cde2bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneObject.cpp">
@@ -91,6 +94,12 @@
     </ClCompile>
     <ClCompile Include="include\crc32.cpp">
       <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ReadWriteLock.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="FX\Particles.cpp">
+      <Filter>FX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,25 +202,28 @@
     <ClInclude Include="include\Array.h">
       <Filter>shared</Filter>
     </ClInclude>
+    <ClInclude Include="include\ReadWriteLock.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="FX\Particles.h">
+      <Filter>FX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="media\programs\fireworks.cgfx">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="media\programs\fresnel.cgfx">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="media\programs\fixed_function.cg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="media\programs\ogl_cg_lighting.cg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="media\programs\basicLight.cgfx">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="include\Structs.inl">
       <Filter>shared</Filter>
+    </None>
+    <None Include="media\programs\basicLight_v.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="media\programs\basicLight_f.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="media\programs\basicUnlit_v.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="media\programs\basicUnlit_f.glsl">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

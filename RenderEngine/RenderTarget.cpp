@@ -13,7 +13,7 @@ RenderTarget::~RenderTarget()
 	if (mRenderTarget)
 	{
 		glDeleteFramebuffersEXT(1, &mRenderTarget);
-		for (kissU32 i = 0; i < mRenderSurfaceCollection.size(); i++)
+		for (ksU32 i = 0; i < mRenderSurfaceCollection.size(); i++)
 		{
 			glDeleteTextures(1, &mRenderSurfaceCollection[i]);
 		}
@@ -60,7 +60,7 @@ void RenderTarget::addRenderSurface(RenderTargetDesc desc)
 	}
 	else
 	{
-		kissU32 i = mRenderSurfaceCollection.size();
+		ksU32 i = mRenderSurfaceCollection.size();
 		glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT+i, GL_TEXTURE_2D, texture, 0);
 		mRenderSurfaceCollection.push_back( std::move(texture) );
 	}

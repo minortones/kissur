@@ -3,10 +3,10 @@
 #include "../AppLayer/InputListener.h"
 
 
-Camera::Camera(void) : mNear(1), mFar(90000), mAspectRatio(0.75f), mFOV(60.0f)
+Camera::Camera(void) : mNear(1), mFar(90000), mAspectRatio(0.75f), mFOV(60.0f), mAngle(0.f), mRadius(30.f)
 {
 	mLookAt		= VECTOR3(0,0,0);
-	mPosition	= VECTOR3(0, 0, 30);
+	mPosition	= VECTOR3(0, 5, 30);
 }
 
 
@@ -22,20 +22,47 @@ Camera::~Camera(void)
 
 void Camera::update()
 {
-	kissU32 downKey = InputListener::getKeyDown();
-	float speed = 1.3f;
+	ksU32 downKey = InputListener::getKeyDown();
+	float speed = 0.1f;
 
-	if( downKey & KEYPRESS_UP )
-		mPosition.z -= speed;
+	if (downKey & KEYPRESS_SHIFT)
+	{
+		if (downKey & KEYPRESS_DOWN)
+		{
+			mPosition.y -= speed;
+			mLookAt.y -= speed;
+		}
 
-	if ( downKey & KEYPRESS_DOWN )
-		mPosition.z += speed;
+		if (downKey & KEYPRESS_UP)
+		{
+			mPosition.y += speed;
+			mLookAt.y += speed;
+		}
+	}
+	else if (downKey & KEYPRESS_CTRL)
+	{
+		if (downKey & KEYPRESS_UP)
+			mPosition.y += speed;
 
-	if ( downKey & KEYPRESS_LEFT )
-		mPosition.x += speed;
-		
-	if ( downKey & KEYPRESS_RIGHT )
-		mPosition.x -= speed;
+		if (downKey & KEYPRESS_DOWN)
+			mPosition.y -= speed;
+	}
+	else
+	{
+		if (downKey & KEYPRESS_UP)
+			mRadius -= speed;
+
+		if (downKey & KEYPRESS_DOWN)
+			mRadius += speed;
+
+		if (downKey & KEYPRESS_LEFT)
+			mAngle -= speed * 0.05f;
+
+		if (downKey & KEYPRESS_RIGHT)
+			mAngle += speed * 0.05f;
+	}
+
+	mPosition = VECTOR3(mRadius*sin(mAngle), mPosition.y, mRadius*cos(mAngle));
 
 
 	buildViewMatrix(mPosition.x, mPosition.y, mPosition.z,
@@ -78,7 +105,7 @@ void CameraManager::update(bool update_all_cams)
 {
 	if (update_all_cams)
 	{
-		for ( kissU32 i = 0; i < mCameras.size(); i++  )
+		for ( ksU32 i = 0; i < mCameras.size(); i++  )
 		{
 			mCameras[i]->update();
 		}
@@ -89,7 +116,7 @@ void CameraManager::update(bool update_all_cams)
 
 void CameraManager::destroy()
 {
-	for (kissU32 i = 0; i < mCameras.size(); i++)
+	for (ksU32 i = 0; i < mCameras.size(); i++)
 	{
 		SAFE_DELETE(mCameras[i]);
 	}

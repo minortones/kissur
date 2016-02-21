@@ -20,7 +20,10 @@ ShaderContext	SimpleShaderContainer::_gShaderContext	= NULL;
 const char	*myProgramName			= "CRAP_SLAP_TRAP",
 			*gDefaultShaderFilename	= "__default",
 			*gDefaultVertProgram	= "..\\media\\programs\\basicLight_v.glsl",
-			*gDefaultFragProgram	= "..\\media\\programs\\basicLight_f.glsl";
+			*gDefaultFragProgram	= "..\\media\\programs\\basicLight_f.glsl",
+			*gUnlitShaderFilename	= "__unlit",
+			*gUnlitVertProgram		= "..\\media\\programs\\basicUnlit_v.glsl",
+			*gUnlitFragProgram		= "..\\media\\programs\\basicUnlit_f.glsl";
 
 
 
@@ -62,7 +65,7 @@ SimpleShaderContainer::~SimpleShaderContainer(void)
 //=================================================================================================================
 
 
-kissU32 SimpleShaderContainer::getStaticContext()
+ksU32 SimpleShaderContainer::getStaticContext()
 {
 	if( _gShaderContext == NULL )
 	{
@@ -120,7 +123,7 @@ void SimpleShaderContainer::shaderErrorCallback(void)
 		break;
 
 	default:
-		throw ErrorNotify("Unknown shiz be going down, son!");
+		throw ErrorNotify("Unknown shiz be going down, boy!");
 		break;
 	}
 }
@@ -148,7 +151,7 @@ void SimpleShaderContainer::unbindFragProgram(void)		{}
 
 ShaderProgram SimpleShaderContainer::loadProgram(const char *filename, const char* entry, ShaderProfile target )
 {
-	kiss32 compiled(0), linked(1);
+	int compiled(0), linked(1);
 	ShaderProgram shader = glCreateShader( target );
 
 	glShaderSource( shader, 1, &filename, NULL);
@@ -188,7 +191,7 @@ ShaderProgram SimpleShaderContainer::loadProgram(const char *filename, const cha
 	
 	if ( !compiled || (mShaderProgram && !linked) )
 	{
-		kiss32 log_len(0);
+		int log_len(0);
 		char log[512];
 		if (compiled)
 			glGetProgramInfoLog(mShaderProgram, sizeof(log), &log_len, log);		// it's a linking error
@@ -249,22 +252,20 @@ ShaderProgram SimpleShaderContainer::loadProgram(int numFiles, ...)
 char* SimpleShaderContainer::getShaderFromFile(const char* filename, ShaderProfile target)
 {
 	FILE *shaderFile;
-	char *text;
-	long size;
 
 	//must read files as binary to prevent problems from newline translation
-	kiss32 error = fopen_s( &shaderFile, filename, "rb");
+	int error = fopen_s( &shaderFile, filename, "rb");
 
 	if ( error != NULL )
 		return 0;
 
 	fseek( shaderFile, 0, SEEK_END);
 
-	size = ftell(shaderFile);
+	long size = ftell(shaderFile);
 
 	fseek( shaderFile, 0, SEEK_SET);
 
-	text = new char[size+1];
+	char* text = new char[size+1];
 
 	fread( text, size, 1, shaderFile);
 
@@ -308,7 +309,7 @@ void SimpleShaderContainer::unbindProgram()
 
 ShaderParameter SimpleShaderContainer::getNamedParam( const char* name )
 {
-	kiss32 key = CRC32(name);
+	ksU32 key = CRC32(name);
 	ParamShaderMap::iterator itr = mShaderParamMap.find(key);
 
 	if( itr == mShaderParamMap.end() )

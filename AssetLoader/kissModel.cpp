@@ -4,7 +4,7 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 
-using namespace kiss;
+using namespace ks;
 
 BEGINENUMSTRING(PrimType, eptNone)
 EXPORTENUMSTRING(eptPoints)
@@ -12,7 +12,7 @@ EXPORTENUMSTRING(eptEdges)
 FINISHENUMSTRING(eptTriangles)
 
 
-static kissU32 mCubeIndices[] = {	0, 1, 2, 3,			// front
+static ksU32 mCubeIndices[]		= {	0, 1, 2, 3,			// front
 									4, 5, 1, 0,			// top
 									3, 2, 6, 7,			// bottom
 									5, 4, 7, 6,			// back
@@ -20,7 +20,7 @@ static kissU32 mCubeIndices[] = {	0, 1, 2, 3,			// front
 									4, 0, 3, 7 };		// left
 
 
-namespace kiss
+namespace ks
 {
 	Model::Model() : mCustomVB(nullptr)
 	{}
@@ -118,7 +118,7 @@ namespace kiss
 		return mCustomVB ? mCustomVB : NULL;
 	}
 
-	const kissU32* Model::getCompiledIndices(PrimType prim) const
+	const ksU32* Model::getCompiledIndices(PrimType prim) const
 	{
 		return mCustomVB ? mCubeIndices : NULL;
 	}

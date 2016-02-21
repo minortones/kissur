@@ -59,17 +59,23 @@ struct	Material;
 class RenderData
 {
 public:
-	RenderData( const void* pVB, const kissU32* pIB, const Matrix4x4& pTrans ) : vertexBuffer(pVB),
-																				indexBuffer(pIB),
-																				Transform(pTrans),
-																				material(NULL)
+	RenderData( const void* pVB, const ksU32* pIB, const Matrix4x4& pTrans )
+		: vertexBuffer(pVB)
+		, vertexSize(0)
+		, indexBuffer(pIB)
+		, renderMode(0)
+		, stride(0)
+		, numIndices(0)
+		, normOffset(0)
+		, material(nullptr)
+		, Transform(pTrans)
 	{}
 
 	const void*		vertexBuffer;
 
 	kiss32			vertexSize;	/*Specifies the number of coordinates per vertex. Must be 2, 3, or 4.*/
 
-	const kissU32*	indexBuffer;
+	const ksU32*	indexBuffer;
 	
 	kiss32			renderMode;
 

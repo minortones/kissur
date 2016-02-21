@@ -25,7 +25,7 @@
 //#define TARGET_CG_SHADERS	1
 #define TARGET_GL_SHADERS	1
 
-typedef	unsigned int	kissU32;
+typedef	unsigned int	ksU32;
 typedef	int				kiss32;
 
 /*

@@ -70,6 +70,10 @@ private:
 	float		mNear;
 
 	float		mFar;
+
+	float		mAngle;
+
+	float		mRadius;
 };
 
 

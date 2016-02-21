@@ -5,13 +5,13 @@
 #include "defines.h"
 #include <Array.h>
 
-typedef	kissU32		kissRenderTexture;
+typedef	ksU32		kissRenderTexture;
 
 
 struct RenderTargetDesc
 {
-	kissU32 width;
-	kissU32 height;
+	ksU32 width;
+	ksU32 height;
 	kiss32	hardware_format;		// GL_RGB10_A2, GL_RGBA16F_ARB and the likes
 	bool	is_depth_buffer;		//
 };

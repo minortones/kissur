@@ -17,6 +17,8 @@
 #define		KEYPRESS_DOWN	(1<<2)
 #define		KEYPRESS_LEFT	(1<<3)
 #define		KEYPRESS_RIGHT	(1<<4)
+#define		KEYPRESS_SHIFT	(1<<5)
+#define		KEYPRESS_CTRL	(1<<6)
 
 
 
@@ -29,7 +31,7 @@ private:
 
 	~InputListener();
 
-	static	kissU32			mKeyDown;
+	static	ksU32			mKeyDown;
 
 public:
 
@@ -39,7 +41,7 @@ public:
 
 	static void		KeyUpCallback(unsigned char c, int x, int y);
 
-	static kissU32	getKeyDown()	{ return mKeyDown; }
+	static ksU32	getKeyDown()	{ return mKeyDown; }
 
 	static void		clearCachedInput()	{ mKeyDown = 0; }
 

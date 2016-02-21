@@ -24,10 +24,10 @@
 	typedef CGparameter		ShaderParameter;
 	typedef	CGprogram		ShaderProgram;
 #else
-	typedef kissU32			ShaderProfile;
-	typedef kissU32			ShaderContext;
-	typedef kiss32			ShaderParameter;
-	typedef kissU32			ShaderProgram;
+	typedef ksU32			ShaderProfile;
+	typedef ksU32			ShaderContext;
+	typedef int				ShaderParameter;
+	typedef ksU32			ShaderProgram;
 
 	typedef enum ShaderAttribute
 	{
@@ -41,10 +41,13 @@
 	extern const char* gDefaultVertProgram;
 	extern const char* gDefaultFragProgram;
 	extern const char* gDefaultShaderFilename;
+	extern const char* gUnlitVertProgram;
+	extern const char* gUnlitFragProgram;
+	extern const char* gUnlitShaderFilename;
 
 
 
-typedef std::map<kiss32, ShaderParameter >	ParamShaderMap;
+typedef std::map<ksU32, ShaderParameter >	ParamShaderMap;
 
 
 class SimpleShaderContainer

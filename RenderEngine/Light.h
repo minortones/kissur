@@ -8,7 +8,7 @@
 
 #include "Structs.h"
 
-typedef struct Light
+struct Light
 {
 	VECTOR3 position;
 	VECTOR3 color;
@@ -19,6 +19,6 @@ typedef struct Light
 		return l;
 	}
 
-}Light;
+};
 
 #endif

@@ -30,11 +30,11 @@
 
 #define MAX_NAME			256
 
-typedef	unsigned int		kissU32;
+typedef	unsigned int		ksU32;
 typedef	int					kiss32;
-typedef unsigned short		kissUShort;
-typedef short				kissShort;
-typedef char				kissByte;
+typedef unsigned short		ksUShort;
+typedef short				ksShort;
+typedef char				ksByte;
 
 // shader params
 #define SP_GLOBAL_AMBIENT	"globalAmbient"

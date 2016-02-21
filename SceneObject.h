@@ -1,15 +1,15 @@
 #ifndef SCENEOBJECT_H
 #define SCENEOBJECT_H
 
+#include "defines.h"
 #include "Matrix4x4.h"
 
 // Forward Declarations
-namespace kiss
+namespace ks
 {
 	class Model;
 }
 class RenderData;
-class Matrix4x4;
 class PhysicsObject;
 struct Material;
 
@@ -24,7 +24,7 @@ public:
 
 	virtual void VRegister(void);
 
-	virtual void update();
+	virtual void update(float elapsed);
 
 	virtual void loadModel(const char* filepath);
 	virtual void loadCube( float pSize );
@@ -40,7 +40,7 @@ public:
 	//
 	PhysicsObject*	getRigidBody()				{return mRigidBody;}
 
-	kiss::Model*	getModel()					{return mModel;}
+	ks::Model*		getModel()					{return mModel;}
 
 	kiss32			getUID() const				{ return mUID; }
 
@@ -57,7 +57,7 @@ private:
 
 	PhysicsObject*		mRigidBody;
 
-	kiss::Model*		mModel;
+	ks::Model*			mModel;
 
 	Material*			mMaterial;
 

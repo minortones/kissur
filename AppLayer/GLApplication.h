@@ -38,10 +38,10 @@ public:
 
 
 	template<class T>
-	kiss32 registerObject(T* o)
+	ksU32 registerObject(T* o)
 	{
-		kissU32 i(0);
-		kiss32 id			= o->getUID();
+		ksU32 i(0);
+		ksU32 id			= o->getUID();
 		auto& objects		= getObjectCollection<T>();
 
 		for ( i = 0; i < objects.size() && o != objects[i]; ++i )

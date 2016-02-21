@@ -56,7 +56,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\include;externals\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);.\include;externals\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -95,9 +95,11 @@
     <ClCompile Include="AppLayer\GLApplication.cpp" />
     <ClCompile Include="AppLayer\InputListener.cpp" />
     <ClCompile Include="AssetLoader\kissModel.cpp" />
+    <ClCompile Include="FX\Particles.cpp" />
     <ClCompile Include="include\crc32.cpp" />
     <ClCompile Include="include\ErrorNotify.cpp" />
     <ClCompile Include="include\Matrix4x4.cpp" />
+    <ClCompile Include="include\ReadWriteLock.cpp" />
     <ClCompile Include="include\RenderData.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle Subsystem\ParticleSystem.cpp" />
@@ -118,6 +120,7 @@
     <ClInclude Include="AppLayer\Service.h" />
     <ClInclude Include="AssetLoader\kissModel.h" />
     <ClInclude Include="AssetLoader\rgbe.h" />
+    <ClInclude Include="FX\Particles.h" />
     <ClInclude Include="include\Array.h" />
     <ClInclude Include="include\crc32.h" />
     <ClInclude Include="include\Debug.h" />
@@ -130,6 +133,7 @@
     <ClInclude Include="include\Matrix4x4.h" />
     <ClInclude Include="include\MiscUtils.h" />
     <ClInclude Include="include\nvImage.h" />
+    <ClInclude Include="include\ReadWriteLock.h" />
     <ClInclude Include="include\Reflector.h" />
     <ClInclude Include="include\RenderData.h" />
     <ClInclude Include="include\SOIL.h" />
@@ -149,11 +153,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Structs.inl" />
-    <None Include="media\programs\basicLight.cgfx" />
-    <None Include="media\programs\fireworks.cgfx" />
-    <None Include="media\programs\fixed_function.cg" />
-    <None Include="media\programs\fresnel.cgfx" />
-    <None Include="media\programs\ogl_cg_lighting.cg" />
+    <None Include="media\programs\basicLight_f.glsl" />
+    <None Include="media\programs\basicLight_v.glsl" />
+    <None Include="media\programs\basicUnlit_f.glsl" />
+    <None Include="media\programs\basicUnlit_v.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

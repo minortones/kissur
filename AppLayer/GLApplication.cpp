@@ -8,11 +8,12 @@
 #include "Macros.h"
 #include "GLApplication.h"
 #include "InputListener.h"
-#include "../SceneObject.h"
-#include "../SceneManagement/Camera.h"
-#include "../RenderEngine/GLRenderer.h"
-#include "../Physics Subsystem/PhysicsManager.h"
-#include "../Particle Subsystem/ParticleSystem.h"
+#include <SceneObject.h>
+#include <SceneManagement/Camera.h>
+#include <RenderEngine/GLRenderer.h>
+#include <Physics Subsystem/PhysicsManager.h>
+#include <Particle Subsystem/ParticleSystem.h>
+#include <FX\Particles.h>
 #include <chrono>
 
 
@@ -75,11 +76,10 @@ bool GLApplication::init(int argc, char** argv)
 	glutTimerFunc( 1, GLApplication::update_callback, 1 );
 
 	glClearColor(0.5f, 0.5f, 0.5f, 0.f);  // Gray background.
-	glEnable(GL_DEPTH_TEST);         // Hidden surface removal.
+	glEnable(GL_DEPTH_TEST);
 
 
 	mRenderer = new GLRenderer();
-	mRenderer->init();
 	Service<GLRenderer>::Register( mRenderer );
 
 	//glutCreateMenu(menu);
@@ -88,22 +88,36 @@ bool GLApplication::init(int argc, char** argv)
 
 	SceneObject* floor = new SceneObject();
 	{
-		floor->initMaterial(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
+		floor->initMaterial(gUnlitShaderFilename, gUnlitVertProgram, gUnlitFragProgram);
 		floor->loadQuad(1.f);
 		Matrix4x4 rot(Matrix4x4::IDENTITY), scale(Matrix4x4::IDENTITY), trans;
 		rot.SetRotateX(DEG_TO_RAD(90.f));
-		float scaling = 19.f;
+		float scaling = 401.f;
 		scale.SetScaling(scaling);
-		scale.m24 = scaling - 1.f;		// offset the y-axis position appropriately
+		scale.m24 = scaling - 0.1f;		// offset the y-axis slightly below 0
 
 		trans = scale * rot;
 		floor->setMatrix(trans);
 	}
 
-	SceneObject* sphere = new SceneObject();
+	SceneObject* cube = new SceneObject();
 	{
-		sphere->initMaterial(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
-		sphere->loadCube(1.5f);
+		cube->initMaterial(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
+		cube->loadCube(1.5f);
+		cube->getMatrix().m24 += 1.4f;
+	}
+
+	ParticleSystem* pSys = new ParticleSystem();
+	{
+		pSys->initShader(gDefaultShaderFilename, gDefaultVertProgram, gDefaultFragProgram);
+
+		ks::Emitter emz;
+		emz.mWorldPos			= VECTOR3(-2.3f, 9.4f, 0.f);
+		emz.mEmissionVelocity	= VECTOR3(2, 0, 0);
+		emz.mMaxParticles		= 3200;
+		emz.mEmissionRate		= 30;
+
+		pSys->spawn(emz);
 	}
 
 	//sceneObj->loadModel("..\\media\\models\\venusm.obj");
@@ -146,15 +160,15 @@ void GLApplication::update(kiss32 pCallbackID)
 
 	for (size_t i = 0; i < mSceneObjects.size(); i++)
 	{
-		mSceneObjects[i]->update();
+		mSceneObjects[i]->update(mElapsedS);
 	}
 
 	//
-	// update particle system. TODO: run on separate thread
+	// update particle system. TODO: Jobify
 	//
 	for( size_t i = 0; i < mParticleSubsytems.size(); ++i )
 	{
-		mParticleSubsytems[i]->step();
+		mParticleSubsytems[i]->step(mElapsedS);
 	}
 
 	CameraManager::update(false);

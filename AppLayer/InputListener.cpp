@@ -1,9 +1,10 @@
 
 #include "InputListener.h"
 #include "GLApplication.h"
+#include <GL/glut.h>
 
 
-kissU32	InputListener::mKeyDown = NULL;
+ksU32	InputListener::mKeyDown = 0;
 
 InputListener::InputListener()
 {}
@@ -15,22 +16,19 @@ InputListener::~InputListener()
 
 void InputListener::KeyDownCallback(unsigned char c, int x, int y)
 {
-	static int animating = NULL;
+	int mods = glutGetModifiers();
+
+	if (mods & GLUT_ACTIVE_SHIFT)
+	{
+		mKeyDown |= KEYPRESS_SHIFT;
+	}
+	else if ((mKeyDown & KEYPRESS_SHIFT))
+	{
+		mKeyDown &= ~KEYPRESS_SHIFT;
+	}
 
 	switch (c)
-	{
-	case ' ':
-		animating = !animating;
-		if (animating)
-		{
-			//glutIdleFunc(idle);
-		}
-		else
-		{
-			//glutIdleFunc(NULL);
-		}    
-		break;
-		
+	{		
 	case 'W':
 	case 'w':
 		mKeyDown |= KEYPRESS_UP;
@@ -52,6 +50,14 @@ void InputListener::KeyDownCallback(unsigned char c, int x, int y)
 		break;
 
 	case 27:  // Esc key
+		break;
+
+	case 23:		// Ctrl+W
+		mKeyDown |= KEYPRESS_UP | KEYPRESS_CTRL;
+		break;
+
+	case 19:		// Ctrl+S
+		mKeyDown |= KEYPRESS_DOWN | KEYPRESS_CTRL;
 		break;
 
 	default:
@@ -82,6 +88,14 @@ void InputListener::KeyUpCallback(unsigned char c, int x, int y)
 	case 'D':
 	case 'd':
 		mKeyDown &= ~KEYPRESS_RIGHT;
+		break;
+
+	case 23:		// Ctrl+W
+		mKeyDown &= ~(KEYPRESS_UP | KEYPRESS_CTRL);
+		break;
+
+	case 19:		// Ctrl+S
+		mKeyDown &= ~(KEYPRESS_DOWN | KEYPRESS_CTRL);
 		break;
 
 	case 27:  // Esc key

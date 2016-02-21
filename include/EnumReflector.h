@@ -14,7 +14,7 @@ public:
 
 	const char*		ToString(const void* pValue) const override;
 	const char*		Typename() const override;
-	kissU32			TypeID() const override;
+	ksU32			TypeID() const override;
 };
 
 template<typename T>
